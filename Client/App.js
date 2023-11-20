@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Bismillah!</Text>
+      <Text>This is the first test commit made by kashian to main</Text>
       <StatusBar style="auto" />
     </View>
   );
