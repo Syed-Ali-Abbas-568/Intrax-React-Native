@@ -20,7 +20,7 @@ export default Signup = () => {
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
-        <Text style={styles.textStyle}>SignIn</Text>
+        <Text style={styles.textStyle}>SignUp</Text>
 
         <View style={styles.horRule} />
 
@@ -35,7 +35,10 @@ export default Signup = () => {
 
         <View style={styles.horRule} />
 
-
+        <Text style={styles.label}>User Name</Text>
+        <TextInput style={styles.inputStyle} placeholder="User Name" />
+        <Text style={styles.label}>Phone</Text>
+        <TextInput style={styles.inputStyle} placeholder="Phone" />
         <Text style={styles.label}>Email</Text>
         <TextInput style={styles.inputStyle} placeholder="Email" />
         <Text style={styles.label}>Password</Text>
