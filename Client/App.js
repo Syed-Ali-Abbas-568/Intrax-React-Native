@@ -5,13 +5,17 @@ import LoginAs from './src/screens/LoginAs';
 import Register from './src/screens/Register';
 import Signup from './src/screens/Signup';
 import Signin from './src/screens/Signin';
+import RoutePlanner from './src/screens/RoutePlanner';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 export default function App() {
   return (
+    <GestureHandlerRootView>
     <SafeAreaView>
-      <Register/>
+      <RoutePlanner/>
     </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
 
