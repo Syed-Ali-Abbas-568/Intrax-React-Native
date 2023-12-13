@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Image, TouchableWithoutFeedback, ImageBackground } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Image, TouchableWithoutFeedback, ImageBackground } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default LoginAs = () => {
@@ -27,88 +27,90 @@ export default LoginAs = () => {
   };
 
   return (
-    <KeyboardAwareScrollView>
-      <View style={styles.container}>
-        <ImageBackground
-          source={require('../../assets/LoginAsi.png')}
-          style={styles.backgroundImage}
-        >
-          
-          <View style={styles.overlayContent}>
+    <SafeAreaView>
+      <KeyboardAwareScrollView>
+        <View style={styles.container}>
+          <ImageBackground
+            source={require('../../assets/LoginAsi.png')}
+            style={styles.backgroundImage}
+          >
+
+            <View style={styles.overlayContent}>
+            </View>
+          </ImageBackground>
+          <Text style={styles.amText}>I am a</Text>
+
+          <View style={styles.buttonContainer}>
+            <TouchableWithoutFeedback
+              onPressIn={handleUserButtonPress}
+              onPressOut={handleUserButtonPress}
+            >
+              <View
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor: isUserButtonPressed ? "white" : "#40B59F",
+                    borderColor: isUserButtonPressed ? "#40B59F" : "white",
+                  },
+                ]}
+              >
+                <Image
+                  source={require('../../assets/user.png')}
+                  style={[styles.icon, { tintColor: userIconColor }]}
+                />
+                <Text
+                  style={[
+                    styles.buttonText,
+                    { color: isUserButtonPressed ? "#40B59F" : "white" },
+                  ]}
+                >
+                  User
+                </Text>
+                <TouchableWithoutFeedback onPress={() => console.log("Arrow pressed!")}>
+                  <Image
+                    source={require('../../assets/arrowwhite.png')}
+                    style={[styles.smallIcon, { tintColor: UserarrowColor }]}
+                  />
+                </TouchableWithoutFeedback>
+              </View>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPressIn={handleCaptainButtonPress}
+              onPressOut={handleCaptainButtonPress}
+            >
+              <View
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor: isCaptainButtonPressed ? "#40B59F" : "white",
+                    borderColor: isCaptainButtonPressed ? "#40B59F" : "#40B59F",
+                  },
+                ]}
+              >
+                <Image
+                  source={require('../../assets/captain.png')}
+                  style={[styles.icon, { tintColor: captainIconColor }]}
+                />
+                <Text
+                  style={[
+                    styles.buttonText,
+                    { color: isCaptainButtonPressed ? "white" : "#40B59F" },
+                  ]}
+                >
+                  Captain
+                </Text>
+                <TouchableWithoutFeedback onPress={() => console.log("Arrow pressed!")}>
+                  <Image
+                    source={require('../../assets/arrowgreen.png')}
+                    style={[styles.smallIcon, { tintColor: CaptainarrowColor }]}
+                  />
+                </TouchableWithoutFeedback>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
-        </ImageBackground>
-        <Text style={styles.amText}>I am a</Text>
-          
-        <View style={styles.buttonContainer}>
-          <TouchableWithoutFeedback
-            onPressIn={handleUserButtonPress}
-            onPressOut={handleUserButtonPress}
-          >
-            <View
-              style={[
-                styles.button,
-                {
-                  backgroundColor: isUserButtonPressed ? "white" : "#40B59F",
-                  borderColor: isUserButtonPressed ? "#40B59F" : "white",
-                },
-              ]}
-            >
-              <Image
-                source={require('../../assets/user.png')}
-                style={[styles.icon, { tintColor: userIconColor }]}
-              />
-              <Text
-                style={[
-                  styles.buttonText,
-                  { color: isUserButtonPressed ? "#40B59F" : "white" },
-                ]}
-              >
-                User
-              </Text>
-              <TouchableWithoutFeedback onPress={() => console.log("Arrow pressed!")}>
-                <Image
-                  source={require('../../assets/arrowwhite.png')}
-                  style={[styles.smallIcon, { tintColor: UserarrowColor}]}
-                />
-              </TouchableWithoutFeedback>
-            </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
-            onPressIn={handleCaptainButtonPress}
-            onPressOut={handleCaptainButtonPress}
-          >
-            <View
-              style={[
-                styles.button,
-                {
-                  backgroundColor: isCaptainButtonPressed ? "#40B59F" : "white",
-                  borderColor: isCaptainButtonPressed ? "#40B59F" : "#40B59F",
-                },
-              ]}
-            >
-              <Image
-                source={require('../../assets/captain.png')}
-                style={[styles.icon, { tintColor: captainIconColor }]}
-              />
-              <Text
-                style={[
-                  styles.buttonText,
-                  { color: isCaptainButtonPressed ? "white" : "#40B59F" },
-                ]}
-              >
-                Captain
-              </Text>
-              <TouchableWithoutFeedback onPress={() => console.log("Arrow pressed!")}>
-                <Image
-                  source={require('../../assets/arrowgreen.png')}
-                  style={[styles.smallIcon, { tintColor: CaptainarrowColor}]}
-                />
-              </TouchableWithoutFeedback>
-            </View>
-          </TouchableWithoutFeedback>
         </View>
-      </View>
-    </KeyboardAwareScrollView>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -116,22 +118,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    paddingTop:'5%',
+    paddingTop: '5%',
   },
   backgroundImage: {
     flex: 1,
   },
   overlayContent: {
     alignItems: 'center',
-    justifyContent:'flex-end',
+    justifyContent: 'flex-end',
     marginBottom: '115%',
   },
   amText: {
-    fontStyle:'italic',
+    fontStyle: 'italic',
     color: '#352555',
     fontSize: 24,
     fontWeight: 'bold',
-    alignSelf:'center',
+    alignSelf: 'center',
   },
   buttonContainer: {
     paddingHorizontal: 10,

@@ -6,6 +6,7 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  SafeAreaView
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -18,45 +19,47 @@ export default Signup = () => {
   };
 
   return (
-    <KeyboardAwareScrollView>
-      <View style={styles.container}>
-        <Text style={styles.textStyle}>SignIn</Text>
+    <SafeAreaView>
+      <KeyboardAwareScrollView>
+        <View style={styles.container}>
+          <Text style={styles.textStyle}>SignIn</Text>
 
-        <View style={styles.horRule} />
+          <View style={styles.horRule} />
 
-        <View style={styles.authStyle}>
-          <TouchableOpacity style={[styles.button, { minWidth: 150 }]}>
-            <Text style={styles.buttonText}>Google</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { minWidth: 150 }]}>
-            <Text style={styles.buttonText}>Facebook</Text>
+          <View style={styles.authStyle}>
+            <TouchableOpacity style={[styles.button, { minWidth: 150 }]}>
+              <Text style={styles.buttonText}>Google</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button, { minWidth: 150 }]}>
+              <Text style={styles.buttonText}>Facebook</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.horRule} />
+
+
+          <Text style={styles.label}>Email</Text>
+          <TextInput style={styles.inputStyle} placeholder="Email" />
+          <Text style={styles.label}>Password</Text>
+          <View style={styles.inputStyle}>
+            <TextInput
+              secureTextEntry={!showPassword}
+              placeholder="Enter Password"
+              style={{ flex: 1 }}
+            />
+            <MaterialCommunityIcons
+              name={showPassword ? "eye-off" : "eye"}
+              size={24}
+              color="#aaa"
+              onPress={toggleShowPassword}
+            />
+          </View>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
         </View>
-
-        <View style={styles.horRule} />
-
-
-        <Text style={styles.label}>Email</Text>
-        <TextInput style={styles.inputStyle} placeholder="Email" />
-        <Text style={styles.label}>Password</Text>
-        <View style={styles.inputStyle}>
-          <TextInput
-            secureTextEntry={!showPassword}
-            placeholder="Enter Password"
-            style={{flex:1}}
-          />
-          <MaterialCommunityIcons
-            name={showPassword ? "eye-off" : "eye"}
-            size={24}
-            color="#aaa"
-            onPress={toggleShowPassword}
-          />
-        </View>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAwareScrollView>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -74,7 +77,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     marginBottom: 18,
     flexDirection: "row",
-    justifyContent:'space-between'
+    justifyContent: 'space-between'
 
   },
   textStyle: {
