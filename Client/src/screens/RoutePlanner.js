@@ -1,8 +1,13 @@
-import React, { useCallback, useRef, useMemo } from "react";
+import React, { useCallback, useRef, useMemo,useState } from "react";
 import { StyleSheet, View, Text, Button, Image } from "react-native";
 import BottomSheet, { BottomSheetScrollView,BottomSheetTextInput} from "@gorhom/bottom-sheet";
+import Maps from "../components/Maps";
+import SearchBar from "../components/SearchBar";
 
 const App = () => {
+
+
+  const [sheetOpen,setSheetOpen]=useState(true)
   // hooks
   const sheetRef = useRef(null);
 
@@ -14,11 +19,11 @@ const App = () => {
         .map((_, index) => `index-${index}`),
     []
   );
-  const snapPoints = useMemo(() => ["25%", "50%", "90%"], []);
+  const snapPoints = useMemo(() => ["45%", "90%"], []);
 
   // callbacks
   const handleSheetChange = useCallback((index) => {
-    console.log("handleSheetChange", index);
+    setSheetOpen(index);
   }, []);
   const handleSnapPress = useCallback((index) => {
     sheetRef.current?.snapToIndex(index);
@@ -39,14 +44,13 @@ const App = () => {
 
   return (
     <View>
-    <View>     
-    <Button title="Snap To 90%" onPress={() => handleSnapPress(2)} />
-    <Button title="Snap To 50%" onPress={() => handleSnapPress(1)} />
-    <Button title="Snap To 25%" onPress={() => handleSnapPress(0)} />
-    <Button title="Close" onPress={handleClosePress} />
-    </View>
-    <View style={styles.container}>
+     <View style={[{flex:1},{flexDirection:'column'}]}>
+ <Maps/>
+     </View>
+     
 
+    <View style={styles.container}>
+    
       <BottomSheet
         ref={sheetRef}
         index={snapPoints.length - 1} // Set initial index to the last snap point
@@ -56,7 +60,8 @@ const App = () => {
       >
         <BottomSheetScrollView contentContainerStyle={styles.contentContainer}>
 
-          <View style={styles.userTab}>
+          
+          {sheetOpen?<><View style={styles.userTab}>
           <Image source={require("../../assets/user2.png")} ></Image>
           <View style={[{flex:1},{flexDirection:'column'}]}>
           <Text style={styles.nameStyle}>User Name</Text>
@@ -65,8 +70,10 @@ const App = () => {
           <View style={[styles.bottomSheetContainer]}> 
 
             <Image source={require("../../assets/from_to.png")} style={{alignSelf:'center'}}></Image>
-            <View style={[{flexDirection:'column'}]}>
+            <View  style={[{flexDirection:'column'}]}>
             <View style={styles.bottomSheetSubContainer}>
+
+
 
             <Text style={styles.label}>From : </Text>
             <BottomSheetTextInput style={styles.inputStyle}/>
@@ -80,7 +87,7 @@ const App = () => {
             </View>
 
 
-          </View>
+          </View></>:<SearchBar/>}
 
           <View style={styles.nearestLocStyle} >
           <Image source={require("../../assets/ic_loc.png")} ></Image>
@@ -116,6 +123,15 @@ const App = () => {
             </View>
             </View>
 
+
+            <View style={[{flexDirection:'row'}]}> 
+            <Image source={require("../../assets/ic_place.png")} style={{alignSelf:'center'}}></Image>
+            <View style={[{flexDirection:'column'},{margin:20},{minWidth:'80%'}]}>
+              <Text style={styles.stationStyle}>Railway Station</Text>
+              <Text style={styles.cityStyle}>Lahore</Text>
+            </View>
+            </View>
+
             <View style={[{flexDirection:'row'}]}> 
             <Image source={require("../../assets/ic_place.png")} style={{alignSelf:'center'}}></Image>
             <View style={[{flexDirection:'column'},{margin:20},{minWidth:'80%'}]}>
@@ -137,8 +153,8 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 600,
-
+    paddingTop:700,
+    
   },
   contentContainer: {
     backgroundColor: "white",
@@ -154,6 +170,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection:'row',
     minWidth:"80%",
+
     shadowColor: '#000',
     justifyContent:'center',
     alignItems:'center',
@@ -198,7 +215,7 @@ const styles = StyleSheet.create({
     height:36,
     borderColor: "#667080",
     borderWidth:1,
-    marginBottom:40,
+    marginBottom:20,
     justifyContent:'flex-start',
     alignItems:'center',
     borderColor:'#E5E5E58A',

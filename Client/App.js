@@ -7,6 +7,7 @@ import Signup from './src/screens/Signup';
 import Signin from './src/screens/Signin';
 import RoutePlanner from './src/screens/RoutePlanner';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Maps from './src/components/Maps';
 
 
 export default function App() {
