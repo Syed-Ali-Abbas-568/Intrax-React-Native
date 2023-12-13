@@ -15,8 +15,10 @@ import DriverEditProfile from './src/screens/DriverEditProfile';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Maps from './src/components/Maps';
 import { NavigationContainer } from '@react-navigation/native';
+import Feedback from './src/screens/Feedback';
 
 import SideDrawer from "./src/components/SideDrawer";
+import StarRating from './src/components/StarRating';
 
 
 export default function App() {
@@ -24,7 +26,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <SideDrawer />
+        <Feedback/>
       </NavigationContainer>
     </SafeAreaProvider>
   )
