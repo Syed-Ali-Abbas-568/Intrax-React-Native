@@ -13,10 +13,10 @@ import Signin from './src/screens/Signin';
 import RoutePlanner from './src/screens/RoutePlanner';
 import DriverEditProfile from './src/screens/DriverEditProfile';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Maps from './src/components/Maps';
 import { NavigationContainer } from '@react-navigation/native';
 
-import SideDrawer from "./src/components/SideDrawer"
-
+import SideDrawer from "./src/components/SideDrawer";
 
 
 export default function App() {
