@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@expo/vector-icons": "^13.0.0"
+    "@expo/vector-icons": "^13.0.0",
+    "react-native-star-rating": "^1.1.0"
   }
 }
