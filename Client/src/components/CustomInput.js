@@ -3,7 +3,7 @@ import React from "react";
 import { Text, View, TextInput, StyleSheet } from "react-native";
 
 
-const CustomInput = ({ labeltext, displaytext }) => {
+const CustomInput = ({ labeltext, displaytext, showPassword = false }) => {
 
     return (
 
@@ -12,6 +12,7 @@ const CustomInput = ({ labeltext, displaytext }) => {
             <TextInput
                 style={styles.input}
                 placeholder={displaytext}
+                secureTextEntry={showPassword}
             />
         </View>
 

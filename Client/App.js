@@ -24,11 +24,24 @@ import StarRating from './src/components/StarRating';
 export default function App() {
 
   return (
+
+
     <GestureHandlerRootView>
-      <NavigationContainer>
-        <Feedback/>
-      </NavigationContainer>
+      <SafeAreaView>
+        <LoginAs />
+        {/* <Register /> */}
+        {/* <Signin /> */}
+        {/* <Signup /> */}
+        {/* <RoutePlanner /> */}
+        {/* <Feedback /> */}
+      </SafeAreaView>
     </GestureHandlerRootView>
+
+    // <NavigationContainer>
+    //   <SideDrawer />
+    // </NavigationContainer>
+
+
   )
 }
 

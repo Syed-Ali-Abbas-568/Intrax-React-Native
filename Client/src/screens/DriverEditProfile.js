@@ -42,6 +42,7 @@ const DriverEditProfile = () => {
             <CustomInput
                 labeltext={'Password'}
                 displaytext={'Secret'}
+                showPassword={true}
             />
             <Pressable style={styles.button}
                 onPressIn={fadeOut} onPressOut={fadeIn}
