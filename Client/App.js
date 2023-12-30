@@ -25,6 +25,7 @@ export default function App() {
 
   return (
 
+
     <GestureHandlerRootView>
       <SafeAreaView>
         <LoginAs />
@@ -39,6 +40,7 @@ export default function App() {
     // <NavigationContainer>
     //   <SideDrawer />
     // </NavigationContainer>
+
 
   )
 }
