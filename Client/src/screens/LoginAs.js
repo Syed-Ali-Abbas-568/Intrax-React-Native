@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, View, Text, Image, TouchableWithoutFeedback, ImageBackground } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-export default LoginAs = () => {
+export default LoginAs = ({navigation}) => {
   const [isUserButtonPressed, setUserButtonPressed] = useState(false);
   const [isCaptainButtonPressed, setCaptainButtonPressed] = useState(false);
   const [userIconColor, setUserIconColor] = useState("white");
@@ -16,6 +16,7 @@ export default LoginAs = () => {
     setUserIconColor(isUserButtonPressed ? "white" : "#40B59F");
     setUserArrowColor(isUserButtonPressed ? "white" : "#40B59F");
     console.log('User Button Pressed!');
+    navigation.navigate('Register')
   };
 
   const handleCaptainButtonPress = () => {
@@ -24,6 +25,7 @@ export default LoginAs = () => {
     setCaptainIconColor(isCaptainButtonPressed ? "#40B59F" : "white");
     setCaptainArrowColor(isCaptainButtonPressed ? "#40B59F" : "white");
     console.log('Captain Button Pressed!');
+    navigation.navigate('Signin')
   };
 
   return (

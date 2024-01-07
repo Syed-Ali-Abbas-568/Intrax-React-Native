@@ -6,11 +6,16 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+
 
 export default Signup = () => {
+
+  const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleShowPassword = () => {
@@ -37,8 +42,6 @@ export default Signup = () => {
 
         <Text style={styles.label}>User Name</Text>
         <TextInput style={styles.inputStyle} placeholder="User Name" />
-        <Text style={styles.label}>Phone</Text>
-        <TextInput style={styles.inputStyle} placeholder="Phone" />
         <Text style={styles.label}>Email</Text>
         <TextInput style={styles.inputStyle} placeholder="Email" />
         <Text style={styles.label}>Password</Text>
@@ -55,7 +58,10 @@ export default Signup = () => {
             onPress={toggleShowPassword}
           />
         </View>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={()=>navigation.reset({
+ index: 0,
+ routes: [{ name: 'RoutePlanner' }],
+ })}>
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
       </View>
