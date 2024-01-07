@@ -1,10 +1,11 @@
 import React, { useCallback, useRef, useMemo, useState } from "react";
-import { StyleSheet, View, Text, Button, Image } from "react-native";
+import { StyleSheet, View, Text, Button, Image,TouchableOpacity } from "react-native";
 import BottomSheet, { BottomSheetScrollView, BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import Maps from "../components/Maps";
 import SearchBar from "../components/SearchBar";
 
-const App = () => {
+
+const App = ({navigation}) => {
 
 
   const [sheetOpen, setSheetOpen] = useState(true)
@@ -95,6 +96,12 @@ const App = () => {
                 <Text style={styles.label}>Find Nearest Station</Text>
               </View>
             </View>
+
+        
+
+            <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('StartRide')}>
+          <Text style={styles.buttonText}>Continue</Text>
+            </TouchableOpacity>
 
             <View style={[{ paddingHorizontal: 20 }, { minWidth: '80%' }]}>
               <Text style={styles.recentStyle}>RECENT</Text>
@@ -259,7 +266,19 @@ const styles = StyleSheet.create({
     borderBottomColor: '#97ADB6',
     borderBottomWidth: 1,
 
-  }
+  },
+  button: {
+    backgroundColor: "#40B59F",
+    borderRadius: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 45,
+    width:"80%",
+    marginBottom:40
+  },
+  buttonText: {
+    color: "white",
+  },
 });
 
 export default App;

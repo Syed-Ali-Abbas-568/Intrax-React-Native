@@ -7,11 +7,11 @@ import StarRating from '../components/StarRating';
 
 
 
-export default Feedback = () => {
+export default Feedback = ({navigation}) => {
 
 
   return (
-    <ScrollView>
+    <ScrollView style={{backgroundColor:'#FFFFFF'}}>
     <SafeAreaView style={styles.constainerStyle}>
     <Text style={styles.feedbackStyle}>Feedback</Text>
     <Text style={styles.reachDestinationStyle}>Reached the Destination Stop!</Text>
@@ -22,7 +22,10 @@ export default Feedback = () => {
  
   </SafeAreaView>
 <StarRating/>
-<TouchableOpacity style={[styles.button, { minWidth: 150 }]}>
+<TouchableOpacity style={[styles.button, { minWidth: 150 }]} onPress={()=>navigation.reset({
+ index: 0,
+ routes: [{ name: 'RoutePlanner' }],
+ })}>
             <Text style={styles.buttonText}>Submit</Text>
 </TouchableOpacity>
 </ScrollView>
@@ -34,6 +37,7 @@ const styles=StyleSheet.create({
     constainerStyle:{
         justifyContent:'flex-start',
         alignItems:'center',
+        
 
     },
     feedbackStyle:{    

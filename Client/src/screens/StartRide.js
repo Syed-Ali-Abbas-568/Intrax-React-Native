@@ -2,7 +2,7 @@ import React, { } from "react";
 import { StyleSheet, View, Text, Pressable, Image, ImageBackground } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const StartRide = () => {
+const StartRide = ({navigation}) => {
 
 
     return (
@@ -14,10 +14,11 @@ const StartRide = () => {
             >
 
                 <View style={styles.bottomsheet}>
-                    <Pressable style={styles.button}
-
-                    >
-                        <Text style={styles.buttontext}>Start Ride</Text>
+                    <Pressable style={styles.button}>
+                        <Text style={styles.buttontext} onPress={()=>navigation.reset({
+ index: 0,
+ routes: [{ name: 'Feedback' }],
+ })}>Start Ride</Text>
                     </Pressable>
                     <Pressable style={styles.ride}>
 

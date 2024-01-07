@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity,Pressable } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { TouchableWithoutFeedback } from "react-native-web";
 
 
-export default Register = () => {
+export default Register = ({navigation}) => {
   const [isUserButtonPressed, setUserButtonPressed] = useState(false);
   const [UserarrowColor, setUserArrowColor] = useState("white");
 
@@ -12,6 +11,7 @@ export default Register = () => {
     setUserButtonPressed(!isUserButtonPressed);
     setUserArrowColor(isUserButtonPressed ? "white" : "#40B59F");
     console.log('Enter Pressed!');
+    navigation.navigate('Signup')
   };
   return (
     <KeyboardAwareScrollView>
@@ -27,7 +27,7 @@ export default Register = () => {
           <TextInput style={styles.inputStyle} placeholder="Your phone number" />
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableWithoutFeedback
+          <Pressable
             onPressIn={handleUserButtonPress}
             onPressOut={handleUserButtonPress}
           >
@@ -48,14 +48,14 @@ export default Register = () => {
               >
                 Enter
               </Text>
-              <TouchableWithoutFeedback onPress={() => console.log("Arrow pressed!")}>
+              <Pressable onPress={() => console.log("Arrow pressed!")}>
                 <Image
                   source={require('../../assets/arrowwhite.png')}
                   style={[styles.smallIcon, { tintColor: UserarrowColor}]}
                 />
-              </TouchableWithoutFeedback>
+              </Pressable>
               </View> 
-      </TouchableWithoutFeedback>
+      </Pressable>
       </View> 
     </KeyboardAwareScrollView>
   );
