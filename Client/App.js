@@ -14,31 +14,38 @@ import RoutePlanner from './src/screens/RoutePlanner';
 import DriverEditProfile from './src/screens/DriverEditProfile';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Maps from './src/components/Maps';
-import { NavigationContainer } from '@react-navigation/native';
 import Feedback from './src/screens/Feedback';
-
+import StartRide from './src/screens/StartRide';
 import SideDrawer from "./src/components/SideDrawer";
-import StarRating from './src/components/StarRating';
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Logout from './src/components/LogOut';
+
+const Stack = createNativeStackNavigator();
 
 
 export default function App() {
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer >
+        <Stack.Navigator >
+          <Stack.Screen name="Role" component={LoginAs} />
+          <Stack.Screen name="Register" component={Register} />
 
-    <GestureHandlerRootView>
-      <SafeAreaView>
-        {/* <LoginAs /> */}
-        {/* <Register /> */}
-        {/* <Signin /> */}
-        {/* <Signup /> */}
-        <RoutePlanner />
-        {/* <Feedback /> */}
-      </SafeAreaView>
+          <Stack.Screen name="StartRide" component={SideDrawer} />
+          <Stack.Screen name="Signin" component={Signin} options={{ title: '' }} />
+          <Stack.Screen name="Signup" component={Signup} options={{ title: '' }} />
+          <Stack.Screen name="RoutePlanner" component={RoutePlanner} />
+          <Stack.Screen name="Feedback" component={Feedback} options={{ headerShown: false }} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </GestureHandlerRootView>
-
     // <NavigationContainer>
-    //   <SideDrawer />
+    //   
     // </NavigationContainer>
+
 
   )
 }

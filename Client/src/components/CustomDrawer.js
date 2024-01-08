@@ -5,6 +5,7 @@ import { StyleSheet, View, Text, Image, Pressable } from 'react-native'
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer'
 import DriverEditProfile from '../screens/DriverEditProfile';
 import { Ionicons } from '@expo/vector-icons';
+import Logout from './LogOut';
 
 
 
@@ -59,11 +60,7 @@ const CustomDrawer = ({ navigation, ...props }) => {
             </View>
 
 
-            <Pressable style={styles.logoutView}>
-                <Ionicons name="log-out-outline" size={25} color={'#40B59F'} marginTop={2.5}
-                />
-                <Text style={styles.logoutStyle}>Logout</Text>
-            </Pressable>
+            <Logout navigation={navigation}/>
         </View>
     )
 
@@ -88,7 +85,9 @@ const styles = StyleSheet.create({
     },
     profile: {
         flexDirection: 'column',
-        paddingVertical: 40,
+        paddingVertical: 20,
+        justifyContent:'center',
+        alignItems:'center'
 
 
 
@@ -97,8 +96,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
 
         borderRadius: 100,
-        width: 100,
-        height: 100,
+        width: 80,
+        height: 80,
     },
     subheading: {
 
@@ -126,7 +125,7 @@ const styles = StyleSheet.create({
     },
     button:
     {
-        marginTop: 20,
+        marginTop: 10,
 
         height: 25,
         alignContent: 'center',
@@ -134,9 +133,8 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         borderWidth: 1,
         borderColor: "rgba(255, 255, 255, 1.0)",
-        marginRight: 10,
-        marginLeft: 150,
-        justifyContent: 'space-evenly'
+        justifyContent: 'center',
+        width:'40%'
     },
     drawerstyle:
     {
@@ -171,15 +169,7 @@ const styles = StyleSheet.create({
         color: "#352555",
 
     },
-    logoutStyle: {
-        // fontFamily: "Quicksand",
-
-        fontSize: 20,
-        fontWeight: "700",
-        fontStyle: "normal",
-        color: "#40B59F",
-        textDecorationLine: 'underline',
-    }
+    
 
 
 

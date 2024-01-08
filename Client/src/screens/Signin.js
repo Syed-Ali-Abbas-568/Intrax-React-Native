@@ -11,7 +11,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-export default Signup = () => {
+export default Signup = ({navigation}) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleShowPassword = () => {
@@ -54,7 +54,10 @@ export default Signup = () => {
               onPress={toggleShowPassword}
             />
           </View>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={()=>navigation.reset({
+ index: 0,
+ routes: [{ name: 'StartRide' }],
+ })}>
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
         </View>
