@@ -27,11 +27,11 @@ export default function App() {
 
     <GestureHandlerRootView>
       <SafeAreaView>
-        <LoginAs />
+        {/* <LoginAs /> */}
         {/* <Register /> */}
         {/* <Signin /> */}
         {/* <Signup /> */}
-        {/* <RoutePlanner /> */}
+        <RoutePlanner />
         {/* <Feedback /> */}
       </SafeAreaView>
     </GestureHandlerRootView>
