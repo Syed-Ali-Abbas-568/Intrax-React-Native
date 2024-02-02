@@ -103,6 +103,10 @@ const App = ({navigation}) => {
           <Text style={styles.buttonText}>Continue</Text>
             </TouchableOpacity>
 
+            <TouchableOpacity style={styles.arrival} >
+          <Text style={styles.buttonText}>Estimated Bus arrival: 12 Mins</Text>
+            </TouchableOpacity>
+
             <View style={[{ paddingHorizontal: 20 }, { minWidth: '80%' }]}>
               <Text style={styles.recentStyle}>RECENT</Text>
 
@@ -279,6 +283,15 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
   },
+  arrival:{
+    backgroundColor:"#352555",
+    borderRadius: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 70,
+    width:"80%",
+    marginBottom:40
+  }
 });
 
 export default App;

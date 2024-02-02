@@ -1,2 +1,0 @@
-# Intrax-FYP
-Intrax
