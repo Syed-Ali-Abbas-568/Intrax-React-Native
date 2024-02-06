@@ -10,8 +10,12 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRoute } from '@react-navigation/native';
 
 export default Signup = ({navigation}) => {
+  const route = useRoute();
+  const { phoneNumber } = route.params;
+  console.log("This is No.1",phoneNumber)
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleShowPassword = () => {
@@ -37,9 +41,6 @@ export default Signup = ({navigation}) => {
 
           <View style={styles.horRule} />
 
-
-          <Text style={styles.label}>Email</Text>
-          <TextInput style={styles.inputStyle} placeholder="Email" />
           <Text style={styles.label}>Password</Text>
           <View style={styles.inputStyle}>
             <TextInput

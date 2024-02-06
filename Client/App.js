@@ -21,6 +21,9 @@ import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Logout from './src/components/LogOut';
+import axios from 'axios';
+
+axios.defaults.withCredentials = true;
 
 const Stack = createNativeStackNavigator();
 
@@ -31,12 +34,13 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
 <NavigationContainer >
  <Stack.Navigator >
+ 
       <Stack.Screen  name="Role" component={LoginAs} />
       <Stack.Screen  name="Register" component={Register} />
- 
+      <Stack.Screen  name="Signup" component={Signup} options={{ title:'' }}/>
       <Stack.Screen  name="StartRide" component={SideDrawer} />
       <Stack.Screen  name="Signin" component={Signin} options={{ title:'' }}/>
-      <Stack.Screen  name="Signup" component={Signup} options={{ title:'' }}/>
+
       <Stack.Screen  name="RoutePlanner" component={RoutePlanner}/>
       <Stack.Screen  name="Feedback" component={Feedback} options={{ headerShown: false }}/>
   </Stack.Navigator> 
