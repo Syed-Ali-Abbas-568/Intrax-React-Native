@@ -28,10 +28,11 @@ const Stack = createNativeStackNavigator();
 export default function App() {
 
   return (
+
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer >
         <Stack.Navigator >
-          <Stack.Screen name="Role" component={LoginAs} />
+          <Stack.Screen name="Role" component={LoginAs} options={{ headerShown: true }} />
           <Stack.Screen name="Register" component={Register} />
 
           <Stack.Screen name="StartRide" component={SideDrawer} />
@@ -42,6 +43,7 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
+
     // <NavigationContainer>
     //   
     // </NavigationContainer>

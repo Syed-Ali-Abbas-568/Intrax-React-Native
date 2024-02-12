@@ -2,23 +2,23 @@ import React, { } from "react";
 import { StyleSheet, View, Text, Pressable, Image, ImageBackground } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const StartRide = ({navigation}) => {
+const StartRide = ({ navigation }) => {
 
 
     return (
 
         <View style={styles.container}>
             <ImageBackground
-                source={require('../../assets/map.png')}
+                source={require('../../assets/activestate.png')}
                 style={styles.backgroundImage}
             >
 
                 <View style={styles.bottomsheet}>
                     <Pressable style={styles.button}>
-                        <Text style={styles.buttontext} onPress={()=>navigation.reset({
- index: 0,
- routes: [{ name: 'Feedback' }],
- })}>Start Ride</Text>
+                        <Text style={styles.buttontext} onPress={() => navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'Feedback' }],
+                        })}>Start Ride</Text>
                     </Pressable>
                     <Pressable style={styles.ride}>
 

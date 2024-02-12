@@ -1,11 +1,11 @@
 import React, { useCallback, useRef, useMemo, useState } from "react";
-import { StyleSheet, View, Text, Button, Image,TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Button, Image, TouchableOpacity } from "react-native";
 import BottomSheet, { BottomSheetScrollView, BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import Maps from "../components/Maps";
 import SearchBar from "../components/SearchBar";
 
 
-const App = ({navigation}) => {
+const App = ({ navigation }) => {
 
 
   const [sheetOpen, setSheetOpen] = useState(true)
@@ -97,10 +97,14 @@ const App = ({navigation}) => {
               </View>
             </View>
 
-        
 
-            <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('StartRide')}>
-          <Text style={styles.buttonText}>Continue</Text>
+
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('StartRide')}>
+              <Text style={styles.buttonText}>Continue</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.arrival} >
+              <Text style={styles.buttonText}>Estimated Bus arrival: 12 Mins</Text>
             </TouchableOpacity>
 
             <View style={[{ paddingHorizontal: 20 }, { minWidth: '80%' }]}>
@@ -273,12 +277,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: 45,
-    width:"80%",
-    marginBottom:40
+    width: "80%",
+    marginBottom: 40
   },
   buttonText: {
     color: "white",
   },
+  arrival: {
+    backgroundColor: "#352555",
+    borderRadius: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 70,
+    width: "80%",
+    marginBottom: 40
+  }
 });
 
 export default App;
