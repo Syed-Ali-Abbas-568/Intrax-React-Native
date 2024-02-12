@@ -10,12 +10,47 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRoute } from '@react-navigation/native';
+import { loginUser } from "../services/api";
 
 export default Signup = ({navigation}) => {
+  const route = useRoute();
+  const { phoneNumber } = route.params;
   const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const onValueChange = (text) => {
+    setPassword(text);
+   
+  };
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
+  };
+
+  const loginUserDetails = async () => {
+    try{
+      const response=await loginUser(phoneNumber,password);
+      if(response==="User Found"){
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'RoutePlanner' }],
+          })
+     
+  
+      }
+      else{
+        setError("Phone or Password is incorrect.")
+      }
+      
+    }
+    catch{
+      console.log('Something is wrong.')
+     
+    }
+    
+
   };
 
   return (
@@ -37,15 +72,14 @@ export default Signup = ({navigation}) => {
 
           <View style={styles.horRule} />
 
-
-          <Text style={styles.label}>Email</Text>
-          <TextInput style={styles.inputStyle} placeholder="Email" />
           <Text style={styles.label}>Password</Text>
           <View style={styles.inputStyle}>
             <TextInput
+              value={password}
               secureTextEntry={!showPassword}
               placeholder="Enter Password"
               style={{ flex: 1 }}
+              onChangeText={(text)=>onValueChange(text)}
             />
             <MaterialCommunityIcons
               name={showPassword ? "eye-off" : "eye"}
@@ -54,12 +88,11 @@ export default Signup = ({navigation}) => {
               onPress={toggleShowPassword}
             />
           </View>
-          <TouchableOpacity style={styles.button} onPress={()=>navigation.reset({
- index: 0,
- routes: [{ name: 'StartRide' }],
- })}>
+          <TouchableOpacity style={styles.button} onPress={loginUserDetails}>
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
+          <View style={[{justifyContent:'center'},{alignItems:'center'},{marginTop:"5%"}]}>{error && <Text style={{ color: 'red' }}>{error}</Text>}</View>
+          
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>

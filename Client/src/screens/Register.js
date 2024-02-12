@@ -1,17 +1,44 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity,Pressable } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { findUser } from "../services/api.js";
 
 
 export default Register = ({navigation}) => {
   const [isUserButtonPressed, setUserButtonPressed] = useState(false);
   const [UserarrowColor, setUserArrowColor] = useState("white");
 
-  const handleUserButtonPress = () => {
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [error, setError] = useState('');
+
+ 
+
+  const handleUserButtonPress = async() => {
+      // Check if the phone number follows the format 03xxxxxxxxx
+      const phoneNumberRegex = /^03\d{9}$/;
+    
+      if (phoneNumberRegex.test(phoneNumber)) {
+        // Format is correct, do something with the phone number
+        
+        response= await findUser(phoneNumber)
+     
+       
+        if(response==="User found"){
+          navigation.navigate('Signin',{phoneNumber})
+        }
+        else{
+          navigation.navigate('Signup',{phoneNumber})
+        }
+
+      } else {
+        // Format is incorrect, display an error
+        setError('Invalid phone number format. Please use 03xxxxxxxxx');
+
+      }
     setUserButtonPressed(!isUserButtonPressed);
     setUserArrowColor(isUserButtonPressed ? "white" : "#40B59F");
     console.log('Enter Pressed!');
-    navigation.navigate('Signup')
+    //navigation.navigate('Signup')
   };
   return (
     <KeyboardAwareScrollView>
@@ -24,11 +51,19 @@ export default Register = ({navigation}) => {
         <Text style={styles.label}>Enter your phone</Text>
         <View style={styles.inputContainer}>
           <Image source={require('../../assets/whatsappi.png')} style={styles.whatsappIcon} />
-          <TextInput style={styles.inputStyle} placeholder="Your phone number" />
+          <TextInput style={styles.inputStyle}   
+         
+         type="string"
+         value={phoneNumber}
+        onChangeText={(text) => {
+          setPhoneNumber(text);
+          setError(''); // Clear error when the user starts typing
+        }}
+        placeholder="03xxxxxxxxx" />
         </View>
         <View style={styles.buttonContainer}>
           <Pressable
-            onPressIn={handleUserButtonPress}
+      
             onPressOut={handleUserButtonPress}
           >
             <View
@@ -48,7 +83,7 @@ export default Register = ({navigation}) => {
               >
                 Enter
               </Text>
-              <Pressable onPress={() => console.log("Arrow pressed!")}>
+              <Pressable >
                 <Image
                   source={require('../../assets/arrowwhite.png')}
                   style={[styles.smallIcon, { tintColor: UserarrowColor}]}
@@ -56,6 +91,7 @@ export default Register = ({navigation}) => {
               </Pressable>
               </View> 
       </Pressable>
+      {error && <Text style={{ color: 'red' }}>{error}</Text>}
       </View> 
     </KeyboardAwareScrollView>
   );
