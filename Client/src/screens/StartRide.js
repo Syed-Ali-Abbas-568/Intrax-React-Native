@@ -9,7 +9,7 @@ const StartRide = ({ navigation }) => {
 
         <View style={styles.container}>
             <ImageBackground
-                source={require('../../assets/activestate.png')}
+                source={require('../../assets/active_state.png')}
                 style={styles.backgroundImage}
             >
 

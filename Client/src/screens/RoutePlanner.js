@@ -107,6 +107,10 @@ const App = ({ navigation }) => {
               <Text style={styles.buttonText}>Estimated Bus arrival: 12 Mins</Text>
             </TouchableOpacity>
 
+            <TouchableOpacity style={styles.arrival} >
+              <Text style={styles.buttonText}>Estimated Bus arrival: 12 Mins</Text>
+            </TouchableOpacity>
+
             <View style={[{ paddingHorizontal: 20 }, { minWidth: '80%' }]}>
               <Text style={styles.recentStyle}>RECENT</Text>
 
