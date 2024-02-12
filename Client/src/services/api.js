@@ -31,3 +31,19 @@ export const findUser = async (phoneNumber) => {
     return "Not Found"
   }
 };
+
+export const loginUser = async (phoneNumber,password) => {
+    try {
+    
+      const response = await axios.get(`${URL}/user/login`, {
+        params: { phone:phoneNumber,
+                password:password },
+        withCredentials: true
+      });
+      console.log(response.data.message)
+      return response.data.message;  // Assuming the server responds with data
+    } catch (error) {
+   //console.error("Error while calling findUserByPhoneNumber API ", error.message);
+      return "Not Found"
+    }
+  };
