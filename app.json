@@ -15,18 +15,32 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.mapsintrax",
+      "config": {
+        "googleMapsApiKey": "AIzaSyDm_77gH2Ch2vvoaoiR1ZfGITCE0V17lts"
+      }
     },
     "android": {
-     
-      
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "bundleIdentifier": "com.example.mapsintrax",
+      "package": "com.example.mapsintrax",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDRRMtathJaJoAfGPMtQ8dztAZxl2Dl_Vs"
+        }
       }
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "bcd24e71-78b4-49a4-99d1-4ee211e38b07"
+      }
     }
   }
 }
