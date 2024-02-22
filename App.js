@@ -15,7 +15,7 @@ import RoutePlanner from './src/screens/RoutePlanner';
 import RoutePlannerCaptain from './src/screens/RoutePlannerCaptain';
 import DriverEditProfile from './src/screens/DriverEditProfile';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Maps from './src/components/Maps';
+//import Maps from './src/components/MapsToBeDeleted';
 import Feedback from './src/screens/Feedback';
 import StartRide from './src/screens/StartRide';
 import SideDrawer from "./src/components/SideDrawer";
@@ -24,6 +24,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Logout from './src/components/LogOut';
 import axios from 'axios';
+import Maps from './src/components/Map';
+import LocationComponent from './src/components/LocationComponent';
 
 axios.defaults.withCredentials = true;
 
@@ -34,9 +36,9 @@ export default function App() {
 
   return (
 
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <NavigationContainer >
-        <Stack.Navigator >
+     <GestureHandlerRootView style={{ flex: 1 }}>
+       <NavigationContainer >
+         <Stack.Navigator >
 
           <Stack.Screen name="Role" component={LoginAs} />
           <Stack.Screen name="Register" component={Register} />
@@ -51,10 +53,7 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
-    // <NavigationContainer>
-    //   
-    // </NavigationContainer>
-
+    
 
   )
 }
@@ -65,3 +64,8 @@ const styles = StyleSheet.create({
     marginTop: StatusBar.currentHeight
   }
 })
+
+
+
+
+
