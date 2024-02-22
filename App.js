@@ -34,26 +34,23 @@ export default function App() {
 
   return (
 
-    // <GestureHandlerRootView style={{ flex: 1 }}>
-    //   <NavigationContainer >
-    //     <Stack.Navigator >
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer >
+        <Stack.Navigator >
 
-    //       <Stack.Screen name="Role" component={LoginAs} />
-    //       <Stack.Screen name="Register" component={Register} />
-    //       <Stack.Screen name="Signup" component={Signup} options={{ title: '' }} />
-    //       <Stack.Screen name="StartRide" component={SideDrawer} />
-    //       <Stack.Screen name="Signin" component={Signin} options={{ title: '' }} />
+          <Stack.Screen name="Role" component={LoginAs} />
+          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="Signup" component={Signup} options={{ title: '' }} />
+          <Stack.Screen name="StartRide" component={SideDrawer} />
+          <Stack.Screen name="Signin" component={Signin} options={{ title: '' }} />
 
-    //       <Stack.Screen name="RoutePlanner" component={RoutePlanner} />
-    //       <Stack.Screen name="Feedback" component={Feedback} options={{ headerShown: false }} />
-    //     </Stack.Navigator>
-    //   </NavigationContainer>
-    // </GestureHandlerRootView>
-    // <NavigationContainer>
-    //   
-    // </NavigationContainer>
-    <LocationComponent/>
-    
+          <Stack.Screen name="RoutePlanner" component={RoutePlanner} />
+          <Stack.Screen name="Feedback" component={Feedback} options={{ headerShown: false }} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GestureHandlerRootView>
+
+
 
   )
 }

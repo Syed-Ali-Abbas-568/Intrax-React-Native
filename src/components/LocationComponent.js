@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View,Text } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
@@ -18,13 +18,9 @@ const LocationComponent = ({ onLocationChange }) => {
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
 
-      // Pass the location to the parent component
-      onLocationChange({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      });
+
     })();
-  }, [onLocationChange]);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -61,7 +57,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   map: {
-    flex: 1,
+    height: 500,
+    width: 500
+
   },
   loadingContainer: {
     flex: 1,

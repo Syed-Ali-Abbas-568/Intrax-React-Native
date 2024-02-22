@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useMemo, useState } from "react";
 import { StyleSheet, View, Text, Button, Image, TouchableOpacity } from "react-native";
 import BottomSheet, { BottomSheetScrollView, BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import Maps from "../components/MapsToBeDeleted";
+import LocationComponent from "../components/LocationComponent";
 import SearchBar from "../components/SearchBar";
 
 
@@ -46,7 +46,8 @@ const App = ({ navigation }) => {
   return (
     <View>
       <View style={[{ flex: 1 }, { flexDirection: 'column' }]}>
-        <Maps />
+        <LocationComponent />
+
       </View>
 
 
