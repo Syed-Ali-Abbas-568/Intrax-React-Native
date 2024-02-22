@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useParams } from "react";
 import { StyleSheet, View, Dimensions, Text, Image, TouchableOpacity, Pressable, ScrollView, Animated } from "react-native";
 import { Poppins_600SemiBold } from "@expo-google-fonts/dev";
 import CustomInput from "../components/CustomInput";
@@ -11,10 +11,9 @@ import CustomInput from "../components/CustomInput";
 const { height } = Dimensions.get("window");
 
 
-const DriverEditProfile = () => {
+const DriverEditProfile = (navigation) => {
     const boxHeight = height * 0.23;
-
-
+    
     return (
         <ScrollView>
 

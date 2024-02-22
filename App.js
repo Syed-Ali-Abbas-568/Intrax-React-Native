@@ -10,7 +10,9 @@ import LoginAs from './src/screens/LoginAs';
 import Register from './src/screens/Register';
 import Signup from './src/screens/Signup';
 import Signin from './src/screens/Signin';
+import CaptainSignin from './src/screens/CaptainSignin';
 import RoutePlanner from './src/screens/RoutePlanner';
+import RoutePlannerCaptain from './src/screens/RoutePlannerCaptain';
 import DriverEditProfile from './src/screens/DriverEditProfile';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 //import Maps from './src/components/MapsToBeDeleted';
@@ -43,13 +45,14 @@ export default function App() {
           <Stack.Screen name="Signup" component={Signup} options={{ title: '' }} />
           <Stack.Screen name="StartRide" component={SideDrawer} />
           <Stack.Screen name="Signin" component={Signin} options={{ title: '' }} />
+          <Stack.Screen name="CaptainSignin" component={CaptainSignin} options={{ title: '' }} />
 
           <Stack.Screen name="RoutePlanner" component={RoutePlanner} />
+          <Stack.Screen name="RoutePlannerCaptain" component={RoutePlannerCaptain} />
           <Stack.Screen name="Feedback" component={Feedback} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
-
 
 
   )

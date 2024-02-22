@@ -25,7 +25,7 @@ export default LoginAs = ({navigation}) => {
     setCaptainIconColor(isCaptainButtonPressed ? "#40B59F" : "white");
     setCaptainArrowColor(isCaptainButtonPressed ? "#40B59F" : "white");
     console.log('Captain Button Pressed!');
-    navigation.navigate('Signin')
+    navigation.navigate('CaptainSignin')
   };
 
   return (
