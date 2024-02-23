@@ -3,9 +3,21 @@ import { StyleSheet, View, Text, Button, Image, TouchableOpacity } from "react-n
 import BottomSheet, { BottomSheetScrollView, BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import LocationComponent from "../components/LocationComponent";
 import SearchBar from "../components/SearchBar";
+import FindNearestStationButton from "../components/FindNearesetStationButton";
 
 
 const App = ({ navigation }) => {
+
+  const [closestStation, setClosestStation] = useState(null);
+  const [stationArrivalInfo, setStationArrivalInfo] = useState({ distance: 0, druation: 0 });
+  const handleStationUpdate = (station) => {
+    setClosestStation(station);
+  };
+
+  const handleStationInfo = (stationInfo) => {
+    setStationArrivalInfo(stationInfo);
+
+  };
 
 
   const [sheetOpen, setSheetOpen] = useState(true)
@@ -46,7 +58,7 @@ const App = ({ navigation }) => {
   return (
     <View>
       <View style={[{ flex: 1 }, { flexDirection: 'column' }]}>
-        <LocationComponent />
+        <LocationComponent closestStation={closestStation} onStationInfoUpdate={handleStationInfo} />
 
       </View>
 
@@ -91,12 +103,10 @@ const App = ({ navigation }) => {
 
               </View></> : <SearchBar />}
 
-            <View style={styles.nearestLocStyle} >
-              <Image source={require("../../assets/ic_loc.png")} ></Image>
-              <View  >
-                <Text style={styles.label}>Find Nearest Station</Text>
-              </View>
-            </View>
+
+            <FindNearestStationButton onStationUpdate={handleStationUpdate} />
+
+
 
 
 
@@ -105,12 +115,13 @@ const App = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.arrival} >
-              <Text style={styles.buttonText}>Estimated Bus arrival: 12 Mins</Text>
+              <Text style={styles.buttonText}>Distance to Station: {stationArrivalInfo.distance}km </Text>
+              <Text style={styles.buttonText}>Estimated Arrival Time: {stationArrivalInfo.duration}min</Text>
             </TouchableOpacity>
-
             <TouchableOpacity style={styles.arrival} >
               <Text style={styles.buttonText}>Estimated Bus arrival: 12 Mins</Text>
             </TouchableOpacity>
+
 
             <View style={[{ paddingHorizontal: 20 }, { minWidth: '80%' }]}>
               <Text style={styles.recentStyle}>RECENT</Text>

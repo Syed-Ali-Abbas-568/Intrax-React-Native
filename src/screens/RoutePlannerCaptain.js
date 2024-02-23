@@ -1,13 +1,14 @@
 import React, { useCallback, useRef, useMemo, useState } from "react";
-import { StyleSheet, View, Text, Button, Image, TouchableOpacity, Switch} from "react-native";
+import { StyleSheet, View, Text, Button, Image, TouchableOpacity, Switch } from "react-native";
 import BottomSheet, { BottomSheetScrollView, BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import Maps from "../components/Maps";
+//import Maps from "../components/Maps";
 import SearchBar from "../components/SearchBar";
+import LocationComponent from "../components/LocationComponent";
 
 
 const App = ({ route, navigation }) => {
 
-  const response=route.params.responseData
+  const response = route.params.responseData
   const [sheetOpen, setSheetOpen] = useState(true)
   const [isActive, setIsActive] = useState(false); // State variable for toggle switch
   // hooks
@@ -51,13 +52,13 @@ const App = ({ route, navigation }) => {
 
   return (
     <View>
-      <View style={[{ flex: 1 }, { flexDirection: 'column' }]}>
-      
-      <Maps />
-      
+      <View style={[{ flex: 0.5 }, { flexDirection: 'column' }]}>
+
+        <LocationComponent />
+
       </View>
-        {/* Toggle switch */}
-        <View style={styles.toggleContainer}>
+      {/* Toggle switch */}
+      <View style={styles.toggleContainer}>
         <Text style={styles.toggleLabel}>Active</Text>
         <Switch
           trackColor={{ false: "#767577", true: "#81b0ff" }}
@@ -116,7 +117,7 @@ const App = ({ route, navigation }) => {
 
 
 
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('StartRide',{responseData:response})}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('StartRide', { responseData: response })}>
               <Text style={styles.buttonText}>Continue</Text>
             </TouchableOpacity>
 
@@ -178,7 +179,7 @@ const App = ({ route, navigation }) => {
           </BottomSheetScrollView>
         </BottomSheet>
       </View>
-    
+
     </View>
   );
 };
