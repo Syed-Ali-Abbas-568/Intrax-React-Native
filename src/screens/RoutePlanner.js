@@ -22,6 +22,9 @@ const App = ({ navigation }) => {
   const [sourceLocation, setSourceLocation] = useState(null);
   const [destinationLocation, setDestinationLocation] = useState(null);
   const [locations, setLocations] = useState([]);
+
+
+
   const [toggler, setToggler] = useState('');
   const handleLocationSelection = (location, type) => {
     if (type === "source") {
@@ -32,7 +35,7 @@ const App = ({ navigation }) => {
   };
 
   const [closestStation, setClosestStation] = useState(null);
-  const [stationArrivalInfo, setStationArrivalInfo] = useState({ distance: 0, druation: 0 });
+  const [stationArrivalInfo, setStationArrivalInfo] = useState(null);
   const handleStationUpdate = (station) => {
     setClosestStation(station);
   };
@@ -61,190 +64,195 @@ const App = ({ navigation }) => {
   const handleSheetChange = useCallback((index) => {
     setSheetOpen(index);
   }, []);
-  const handleSnapPress = useCallback((index) => {
-    sheetRef.current?.snapToIndex(index);
-  }, []);
-  const handleClosePress = useCallback(() => {
-    sheetRef.current?.close();
-  }, []);
+  // const handleSnapPress = useCallback((index) => {
+  //   sheetRef.current?.snapToIndex(index);
+  // }, []);
+  // const handleClosePress = useCallback(() => {
+  //   sheetRef.current?.close();
+  // }, []);
 
-  // render
-  const renderItem = useCallback(
-    (item) => (
-      <View key={item} style={styles.itemContainer}>
-        <Text>{item}</Text>
-      </View>
-    ),
-    []
-  );
-  ///[{zIndex:1000},{position:"absolute"},{top:10,borderWidth:3}
+  // // render
+  // const renderItem = useCallback(
+  //   (item) => (
+  //     <View key={item} style={styles.itemContainer}>
+  //       <Text>{item}</Text>
+  //     </View>
+  //   ),
+  //   []
+  // );
+  // ///[{zIndex:1000},{position:"absolute"},{top:10,borderWidth:3}
   return (
 
     <View style={[{ flex: 1 }, { flexDirection: 'column' }]}>
       <LocationComponent closestStation={closestStation} onStationInfoUpdate={handleStationInfo} />
-      <>
-        <View style={styles.srcStyle}>
-          <GooglePlacesAutocomplete
-            placeholder="Source"
-            query={{ key: ANDRIOD_GOOGLE_API_KEY }}
-            fetchDetails={true}
-            onPress={(data, details = null) => { console.log(details.geometry.location.lat, details.geometry.location.lng); setToggler(true) }}
-            onFail={error => console.log(error)}
-            onNotFound={() => console.log('no results')}
 
-          />
+      <View style={styles.srcStyle}>
+        <GooglePlacesAutocomplete
+          placeholder="Source"
+          query={{ key: ANDRIOD_GOOGLE_API_KEY }}
+          fetchDetails={true}
+          onPress={(data, details = null) => { console.log(details.geometry.location.lat, details.geometry.location.lng); setToggler(true) }}
+          onFail={error => console.log(error)}
+          onNotFound={() => console.log('no results')}
 
-        </View>
-        {toggler && <View style={styles.dstStyle}>
-          <GooglePlacesAutocomplete
-            placeholder="Destination"
-            query={{ key: ANDRIOD_GOOGLE_API_KEY }}
-            fetchDetails={true}
-            onPress={(data, details = null) => console.log(details.geometry.location.lat, details.geometry.location.lng)}
-            onFail={error => console.log(error)}
-            onNotFound={() => console.log('no results')}
+        />
 
-          />
+      </View>
+      {toggler && <View style={styles.dstStyle}>
+        <GooglePlacesAutocomplete
+          placeholder="Destination"
+          query={{ key: ANDRIOD_GOOGLE_API_KEY }}
+          fetchDetails={true}
+          onPress={(data, details = null) => console.log(details.geometry.location.lat, details.geometry.location.lng)}
+          onFail={error => console.log(error)}
+          onNotFound={() => console.log('no results')}
 
-        </View>}
+        />
 
-        <View style={[{ flexDirection: "column" }]}>
-          <LocationComponent />
-        </View>
+      </View>}
 
-        <View style={styles.container}>
-          <BottomSheet
-            ref={sheetRef}
-            index={snapPoints.length - 1} // Set initial index to the last snap point
-            snapPoints={snapPoints}
-            onChange={handleSheetChange}
-            enableContentPanningGesture // Enable dragging the content itself
+      <View style={[{ flexDirection: "column" }]}>
+        <LocationComponent closestStation={closestStation} onStationInfoUpdate={handleStationInfo} />
+      </View>
+
+      <View style={styles.container}>
+        <BottomSheet
+          ref={sheetRef}
+          index={snapPoints.length - 1} // Set initial index to the last snap point
+          snapPoints={snapPoints}
+          onChange={handleSheetChange}
+          enableContentPanningGesture // Enable dragging the content itself
+        >
+          <BottomSheetScrollView
+            contentContainerStyle={styles.contentContainer}
           >
-            <BottomSheetScrollView
-              contentContainerStyle={styles.contentContainer}
-            >
 
-              <View style={styles.userTab}>
-                <Image source={require("../../assets/user2.png")}></Image>
-                <View style={[{ flex: 1 }, { flexDirection: "column" }]}>
-                  <Text style={styles.nameStyle}>User Name</Text>
-                </View>
+            <View style={styles.userTab}>
+              <Image source={require("../../assets/user2.png")}></Image>
+              <View style={[{ flex: 1 }, { flexDirection: "column" }]}>
+                <Text style={styles.nameStyle}>User Name</Text>
               </View>
+            </View>
 
 
 
-              <FindNearestStationButton onStationUpdate={handleStationUpdate} />
+            <FindNearestStationButton onStationUpdate={handleStationUpdate} />
 
 
 
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate("StartRide")}
-              >
-                <Text style={styles.buttonText}>Continue</Text>
-              </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate("StartRide")}
+            >
+              <Text style={styles.buttonText}>Continue</Text>
+            </TouchableOpacity>
 
-              <TouchableOpacity style={styles.arrival} >
+            {stationArrivalInfo && (
+              <TouchableOpacity style={styles.arrival}>
                 <Text style={styles.buttonText}>Distance to Station: {stationArrivalInfo.distance}km </Text>
                 <Text style={styles.buttonText}>Estimated Arrival Time: {stationArrivalInfo.duration}min</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.arrival} >
+            )}
+
+            {stationArrivalInfo && (
+              <TouchableOpacity style={styles.arrival}>
                 <Text style={styles.buttonText}>Estimated Bus arrival: 12 Mins</Text>
               </TouchableOpacity>
+            )}
 
 
-              <View style={[{ paddingHorizontal: 20 }, { minWidth: '80%' }]}>
-                <Text style={styles.recentStyle}>RECENT</Text>
+            <View style={[{ paddingHorizontal: 20 }, { minWidth: '80%' }]}>
+              <Text style={styles.recentStyle}>RECENT</Text>
 
-                <View style={[{ flexDirection: "row" }]}>
-                  <Image
-                    source={require("../../assets/ic_place.png")}
-                    style={{ alignSelf: "center" }}
-                  ></Image>
-                  <View
-                    style={[
-                      { flexDirection: "column" },
-                      { margin: 20 },
-                      { minWidth: "80%" },
-                    ]}
-                  >
-                    <Text style={styles.stationStyle}>Railway Station</Text>
-                    <Text style={styles.cityStyle}>Lahore</Text>
-                  </View>
-                </View>
-
-                <View style={[{ flexDirection: "row" }]}>
-                  <Image
-                    source={require("../../assets/ic_place.png")}
-                    style={{ alignSelf: "center" }}
-                  ></Image>
-                  <View
-                    style={[
-                      { flexDirection: "column" },
-                      { margin: 20 },
-                      { minWidth: "80%" },
-                    ]}
-                  >
-                    <Text style={styles.stationStyle}>Railway Station</Text>
-                    <Text style={styles.cityStyle}>Lahore</Text>
-                  </View>
-                </View>
-
-                <View style={[{ flexDirection: "row" }]}>
-                  <Image
-                    source={require("../../assets/ic_place.png")}
-                    style={{ alignSelf: "center" }}
-                  ></Image>
-                  <View
-                    style={[
-                      { flexDirection: "column" },
-                      { margin: 20 },
-                      { minWidth: "80%" },
-                    ]}
-                  >
-                    <Text style={styles.stationStyle}>Railway Station</Text>
-                    <Text style={styles.cityStyle}>Lahore</Text>
-                  </View>
-                </View>
-
-                <View style={[{ flexDirection: "row" }]}>
-                  <Image
-                    source={require("../../assets/ic_place.png")}
-                    style={{ alignSelf: "center" }}
-                  ></Image>
-                  <View
-                    style={[
-                      { flexDirection: "column" },
-                      { margin: 20 },
-                      { minWidth: "80%" },
-                    ]}
-                  >
-                    <Text style={styles.stationStyle}>Railway Station</Text>
-                    <Text style={styles.cityStyle}>Lahore</Text>
-                  </View>
-                </View>
-
-                <View style={[{ flexDirection: "row" }]}>
-                  <Image
-                    source={require("../../assets/ic_place.png")}
-                    style={{ alignSelf: "center" }}
-                  ></Image>
-                  <View
-                    style={[
-                      { flexDirection: "column" },
-                      { margin: 20 },
-                      { minWidth: "80%" },
-                    ]}
-                  >
-                    <Text style={styles.stationStyle}>Railway Station</Text>
-                    <Text style={styles.cityStyle}>Lahore</Text>
-                  </View>
+              <View style={[{ flexDirection: "row" }]}>
+                <Image
+                  source={require("../../assets/ic_place.png")}
+                  style={{ alignSelf: "center" }}
+                ></Image>
+                <View
+                  style={[
+                    { flexDirection: "column" },
+                    { margin: 20 },
+                    { minWidth: "80%" },
+                  ]}
+                >
+                  <Text style={styles.stationStyle}>Railway Station</Text>
+                  <Text style={styles.cityStyle}>Lahore</Text>
                 </View>
               </View>
-            </BottomSheetScrollView>
-          </BottomSheet >
-        </View >
-      </>
+
+              <View style={[{ flexDirection: "row" }]}>
+                <Image
+                  source={require("../../assets/ic_place.png")}
+                  style={{ alignSelf: "center" }}
+                ></Image>
+                <View
+                  style={[
+                    { flexDirection: "column" },
+                    { margin: 20 },
+                    { minWidth: "80%" },
+                  ]}
+                >
+                  <Text style={styles.stationStyle}>Railway Station</Text>
+                  <Text style={styles.cityStyle}>Lahore</Text>
+                </View>
+              </View>
+
+              <View style={[{ flexDirection: "row" }]}>
+                <Image
+                  source={require("../../assets/ic_place.png")}
+                  style={{ alignSelf: "center" }}
+                ></Image>
+                <View
+                  style={[
+                    { flexDirection: "column" },
+                    { margin: 20 },
+                    { minWidth: "80%" },
+                  ]}
+                >
+                  <Text style={styles.stationStyle}>Railway Station</Text>
+                  <Text style={styles.cityStyle}>Lahore</Text>
+                </View>
+              </View>
+
+              <View style={[{ flexDirection: "row" }]}>
+                <Image
+                  source={require("../../assets/ic_place.png")}
+                  style={{ alignSelf: "center" }}
+                ></Image>
+                <View
+                  style={[
+                    { flexDirection: "column" },
+                    { margin: 20 },
+                    { minWidth: "80%" },
+                  ]}
+                >
+                  <Text style={styles.stationStyle}>Railway Station</Text>
+                  <Text style={styles.cityStyle}>Lahore</Text>
+                </View>
+              </View>
+
+              <View style={[{ flexDirection: "row" }]}>
+                <Image
+                  source={require("../../assets/ic_place.png")}
+                  style={{ alignSelf: "center" }}
+                ></Image>
+                <View
+                  style={[
+                    { flexDirection: "column" },
+                    { margin: 20 },
+                    { minWidth: "80%" },
+                  ]}
+                >
+                  <Text style={styles.stationStyle}>Railway Station</Text>
+                  <Text style={styles.cityStyle}>Lahore</Text>
+                </View>
+              </View>
+            </View>
+          </BottomSheetScrollView>
+        </BottomSheet >
+      </View >
+
     </View>);
 
 };

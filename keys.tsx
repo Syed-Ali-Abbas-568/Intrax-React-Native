@@ -1,1 +1,1 @@
-export const ANDRIOD_GOOGLE_API_KEY="AIzaSyDRRMtathJaJoAfGPMtQ8dztAZxl2Dl_Vs"
+export const ANDRIOD_GOOGLE_API_KEY = "AIzaSyDRRMtathJaJoAfGPMtQ8dztAZxl2Dl_Vs"
