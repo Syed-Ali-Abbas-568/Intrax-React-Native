@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useMemo, useState } from "react";
 import { StyleSheet, View, Text, Button, Image, TouchableOpacity, Switch} from "react-native";
 import BottomSheet, { BottomSheetScrollView, BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import Maps from "../components/Maps";
+//import Maps from "../components/Maps";
 import SearchBar from "../components/SearchBar";
 
 
@@ -53,7 +53,7 @@ const App = ({ route, navigation }) => {
     <View>
       <View style={[{ flex: 1 }, { flexDirection: 'column' }]}>
       
-      <Maps />
+      {/* <Maps /> */}
       
       </View>
         {/* Toggle switch */}
