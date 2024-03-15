@@ -22,6 +22,7 @@ const App = ({ navigation }) => {
   const [sourceLocation, setSourceLocation] = useState(null);
   const [destinationLocation, setDestinationLocation] = useState(null);
   const [locations, setLocations] = useState([]);
+  const [showDestinationInput, setShowDestinationInput] = useState(false);
 
 
 
@@ -58,7 +59,7 @@ const App = ({ navigation }) => {
         .map((_, index) => `index-${index}`),
     []
   );
-  const snapPoints = useMemo(() => ["20%", "80%"], []);
+  const snapPoints = useMemo(() => ["30%", "80%"], []);
 
   // callbacks
   const handleSheetChange = useCallback((index) => {
@@ -91,14 +92,17 @@ const App = ({ navigation }) => {
           placeholder="Source"
           query={{ key: ANDRIOD_GOOGLE_API_KEY }}
           fetchDetails={true}
-          onPress={(data, details = null) => { console.log(details.geometry.location.lat, details.geometry.location.lng); setToggler(true) }}
+          onPress={(data, details = null) => { console.log(details.geometry.location.lat, details.geometry.location.lng);  }}
           onFail={error => console.log(error)}
           onNotFound={() => console.log('no results')}
-
+          textInputProps={{
+            onFocus : () => setShowDestinationInput(false),
+            onBlur  : () => setShowDestinationInput(true)
+          }} 
         />
 
       </View>
-      {toggler && <View style={styles.dstStyle}>
+      {showDestinationInput && (<View style={styles.dstStyle}>
         <GooglePlacesAutocomplete
           placeholder="Destination"
           query={{ key: ANDRIOD_GOOGLE_API_KEY }}
@@ -109,7 +113,7 @@ const App = ({ navigation }) => {
 
         />
 
-      </View>}
+      </View>)}
 
       <View style={[{ flexDirection: "column" }]}>
         <LocationComponent closestStation={closestStation} onStationInfoUpdate={handleStationInfo} />
