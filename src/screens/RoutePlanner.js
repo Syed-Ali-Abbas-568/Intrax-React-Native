@@ -18,6 +18,8 @@ import FindNearestStationButton from "../components/FindNearesetStationButton";
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { ANDRIOD_GOOGLE_API_KEY } from "../../keys";
 
+
+
 const App = ({ navigation }) => {
   const [sourceLocation, setSourceLocation] = useState(null);
   const [destinationLocation, setDestinationLocation] = useState(null);
@@ -28,10 +30,15 @@ const App = ({ navigation }) => {
 
   const [toggler, setToggler] = useState('');
   const handleLocationSelection = (location, type) => {
+    
     if (type === "source") {
       setSourceLocation(location);
     } else if (type === "destination") {
+      {console.log("This is function wali locaion",location)}
+      if(location!=null&&location!=undefined){
+        
       setDestinationLocation(location);
+    }
     }
   };
 
@@ -85,14 +92,14 @@ const App = ({ navigation }) => {
   return (
 
     <View style={[{ flex: 1 }, { flexDirection: 'column' }]}>
-      <LocationComponent closestStation={closestStation} onStationInfoUpdate={handleStationInfo} />
+      <LocationComponent closestStation={closestStation} onStationInfoUpdate={handleStationInfo} source={sourceLocation} destination={destinationLocation} />
 
       <View style={styles.srcStyle}>
         <GooglePlacesAutocomplete
           placeholder="Source"
           query={{ key: ANDRIOD_GOOGLE_API_KEY }}
           fetchDetails={true}
-          onPress={(data, details = null) => { console.log(details.geometry.location.lat, details.geometry.location.lng);  }}
+          onPress={(data, details = null) => { console.log(details.geometry.location.lat, details.geometry.location.lng); }}
           onFail={error => console.log(error)}
           onNotFound={() => console.log('no results')}
           textInputProps={{
@@ -104,14 +111,28 @@ const App = ({ navigation }) => {
       </View>
       {showDestinationInput && (<View style={styles.dstStyle}>
         <GooglePlacesAutocomplete
-          placeholder="Destination"
-          query={{ key: ANDRIOD_GOOGLE_API_KEY }}
-          fetchDetails={true}
-          onPress={(data, details = null) => console.log(details.geometry.location.lat, details.geometry.location.lng)}
-          onFail={error => console.log(error)}
-          onNotFound={() => console.log('no results')}
+  placeholder="Destination"
+  query={{ key: ANDRIOD_GOOGLE_API_KEY }}
+  fetchDetails={true}
+  onPress={(data, details = null) => {
+    if (details) {
+     // console.log(details.geometry.location.lat, details.geometry.location.lng);
+      const location = {
+        latitude: details.geometry.location.lat,
+        longitude: details.geometry.location.lng,
+        title: "Destination",
+        description: "This is your destination location."
+      };
+    
+      {console.log("This is location",location)} 
+    handleLocationSelection(location, "destination"); // Pass type as well
+  
+    }
+  }}
+  onFail={error => console.log(error)}
+  onNotFound={() => console.log('no results')}
+/>
 
-        />
 
       </View>)}
 

@@ -65,16 +65,6 @@ export default Signup = ({route}) => {
 
         <View style={styles.horRule} />
 
-        <View style={styles.authStyle}>
-          <TouchableOpacity style={[styles.button, { minWidth: 150 }]}>
-            <Text style={styles.buttonText}>Google</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { minWidth: 150 }]}>
-            <Text style={styles.buttonText}>Facebook</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.horRule} />
 
         <Text style={styles.label}>User Name</Text>
         <TextInput style={styles.inputStyle} placeholder="User Name"  onChangeText={(text) => onValueChange('name', text)}  />
