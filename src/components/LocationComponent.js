@@ -7,7 +7,7 @@ import * as Location from 'expo-location';
 const { width, height } = Dimensions.get('window');
 
 const LocationComponent = ({ onLocationChange, closestStation, onStationInfoUpdate,source,destination }) => {
-  const [location, setLocation] = useState(null);
+  const [userLocation, setUserLocation] = useState(null); // State to track user's location
   const [errorMsg, setErrorMsg] = useState(null);
   const [previousDest, setPreviousDest] = useState(null);
 
@@ -23,7 +23,8 @@ const LocationComponent = ({ onLocationChange, closestStation, onStationInfoUpda
   const [stationInfo, setStationInfo] = useState(null);
   const apiKey = "AIzaSyDRRMtathJaJoAfGPMtQ8dztAZxl2Dl_Vs";
 
- 
+  const [watchId, setWatchId] = useState(null); // State to track watch ID for location updates
+
 
 
   //Hardcoded List of Stations this will be changed to to reterive stations form databases
@@ -88,65 +89,78 @@ const LocationComponent = ({ onLocationChange, closestStation, onStationInfoUpda
         return;
       }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+      // Start watching for location updates
+      const id = await Location.watchPositionAsync(
+        { accuracy: Location.Accuracy.BestForNavigation, timeInterval: 1000 },
+        (newLocation) => {
+          setUserLocation(newLocation); // Update user's location
+          if (onLocationChange) {
+            onLocationChange(newLocation.coords); // Pass the updated coordinates to the parent
+            console.log(newLocation.coords);
+          }
+        }
+        
+      );
+      setWatchId(id); // Store watch ID for later cleanup
 
-
+      return () => {
+        if (watchId !== null) {
+          Location.clearWatch(watchId); // Stop watching for location updates when component unmounts
+        }
+      };
     })();
   }, []);
 
   return (
     <View style={styles.container}>
-      {location ? (
+      {userLocation ? (
         <MapView
           style={styles.map}
           initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
+            latitude: userLocation.coords.latitude,
+            longitude: userLocation.coords.longitude,
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
           }}
           ref={c => this.mapView = c}
         >
+          {/* Render Directions if closestStation is available */}
           {closestStation && (
             <MapViewDirections
-              origin={{ latitude: location.coords.latitude, longitude: location.coords.longitude }}
+              origin={{ latitude: userLocation.coords.latitude, longitude: userLocation.coords.longitude }}
               destination={{ latitude: closestStation.latitude, longitude: closestStation.longitude }}
               apikey={apiKey}
               strokeWidth={3}
               strokeColor="#40B59F"
-
               onReady={result => {
-                console.log(`Distance: ${result.distance} km`)
-                console.log(`Duration: ${result.duration} min.`)
-
-                onStationInfoUpdate({ distance: result.distance.toFixed(2), duration: result.duration.toFixed(0) })
-
+                onStationInfoUpdate({ distance: result.distance.toFixed(2), duration: result.duration.toFixed(0) });
                 this.mapView.fitToCoordinates(result.coordinates, {
                   edgePadding: {
-                    right: (width / 20),
-                    bottom: (height / 20),
-                    left: (width / 20),
-                    top: (height / 20),
+                    right: width / 20,
+                    bottom: height / 20,
+                    left: width / 20,
+                    top: height / 20,
                   }
                 });
               }}
               onError={(errorMessage) => {
                 console.log('GOT AN ERROR');
               }}
-
             />
           )}
 
+          {/* Render Marker for User's Location */}
           <Marker
             coordinate={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
+              latitude: userLocation.coords.latitude,
+              longitude: userLocation.coords.longitude,
             }}
             title="Your Location"
             description="You are here!"
+            image={require('../../assets/bus.png')} // Specify the source of your custom icon
           />
 
+          {/* Render Markers for Stations */}
           {stations.map((station, index) => (
             <Marker
               key={index}
@@ -159,15 +173,15 @@ const LocationComponent = ({ onLocationChange, closestStation, onStationInfoUpda
             >
               {/* Custom bus icon for the marker */}
               <Image
-                source={require('../../assets/finish.png')}
-                style={{ width: 40, height: 40 }} // Adjust the size as needed
+                source={'../../assets/src_dest.png'}
+                style={{ width: 40, height: 40 }}
               />
             </Marker>
           ))}
 
-          {/*Source Destination Plot*/}
-        
-           { source&&(<Marker
+          {/* Render Markers for Source and Previous Destination */}
+          {source && (
+            <Marker
               coordinate={{
                 latitude: source.latitude,
                 longitude: source.longitude,
@@ -175,30 +189,29 @@ const LocationComponent = ({ onLocationChange, closestStation, onStationInfoUpda
               title={source.title}
               description={source.description}
             >
-             
               <Image
-                source={require('../../assets/src_dest.png')}
-                style={{ width: 40, height: 40 }} // Adjust the size as needed
+                source={'../../assets/src_dest.png'}
+                style={{ width: 40, height: 40 }}
               />
-            </Marker>)
-          }
-          {console.log("This is child destination",previousDest)}
-          {previousDest&&(<Marker
+            </Marker>
+          )}
+          {previousDest && (
+            <Marker
               coordinate={{
                 latitude: previousDest.latitude,
                 longitude: previousDest.longitude,
               }}
               title={previousDest.title}
-              description={`previousDest.description+${previousDest.latitude}`}
+              description={`${previousDest.description} ${previousDest.latitude}`}
             >
-             
               <Image
-                source={require('../../assets/src_dest.png')}
-                style={{ width: 40, height: 40 }} // Adjust the size as needed
+                source={'../../assets/src_dest.png'}
+                style={{ width: 80, height: 80 }}
               />
-            </Marker>)
-          }
-         { /*<Marker
+            </Marker>
+          )}
+
+{ /*<Marker
               coordinate={{
                 latitude: 31.4216463,
                 longitude: 74.3653453,
@@ -211,13 +224,8 @@ const LocationComponent = ({ onLocationChange, closestStation, onStationInfoUpda
                 source={require('../../assets/src_dest.png')}
                 style={{ width: 40, height: 40 }} // Adjust the size as needed
               />
-            </Marker>*/
-}
-         
-
+            </Marker>*/}
         </MapView>
-
-
       ) : (
         <View style={styles.loadingContainer}>
           <Text>Loading...</Text>
