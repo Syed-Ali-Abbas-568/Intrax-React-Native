@@ -32,9 +32,11 @@ const App = ({ navigation }) => {
   const handleLocationSelection = (location, type) => {
     
     if (type === "source") {
+
+      if(location!=null&&location!=undefined){
       setSourceLocation(location);
+      }
     } else if (type === "destination") {
-      {console.log("This is function wali locaion",location)}
       if(location!=null&&location!=undefined){
         
       setDestinationLocation(location);
@@ -90,16 +92,31 @@ const App = ({ navigation }) => {
   // );
   // ///[{zIndex:1000},{position:"absolute"},{top:10,borderWidth:3}
   return (
-
+   
     <View style={[{ flex: 1 }, { flexDirection: 'column' }]}>
       <LocationComponent closestStation={closestStation} onStationInfoUpdate={handleStationInfo} source={sourceLocation} destination={destinationLocation} />
-
+      {/*console.log("parent rerenders")}
+      {console.log("Source",sourceLocation)}
+  {console.log("Dest",destinationLocation)*/}
       <View style={styles.srcStyle}>
         <GooglePlacesAutocomplete
           placeholder="Source"
           query={{ key: ANDRIOD_GOOGLE_API_KEY }}
           fetchDetails={true}
-          onPress={(data, details = null) => { console.log(details.geometry.location.lat, details.geometry.location.lng); }}
+          onPress={(data, details = null) => { console.log(details.geometry.location.lat, details.geometry.location.lng);
+                                                if(details){
+                                                    // console.log(details.geometry.location.lat, details.geometry.location.lng);
+                                                     const location = {
+                                                       latitude: details.geometry.location.lat,
+                                                       longitude: details.geometry.location.lng,
+                                                       title: "Source",
+                                                       description: "This is your Source location."
+                                                     };
+                                                   
+                                                   handleLocationSelection(location, "source"); // Pass type as well
+                                                 
+                                                   
+                                                } }}
           onFail={error => console.log(error)}
           onNotFound={() => console.log('no results')}
           textInputProps={{
@@ -124,7 +141,6 @@ const App = ({ navigation }) => {
         description: "This is your destination location."
       };
     
-      {console.log("This is location",location)} 
     handleLocationSelection(location, "destination"); // Pass type as well
   
     }
@@ -136,9 +152,7 @@ const App = ({ navigation }) => {
 
       </View>)}
 
-      <View style={[{ flexDirection: "column" }]}>
-        <LocationComponent closestStation={closestStation} onStationInfoUpdate={handleStationInfo} />
-      </View>
+
 
       <View style={styles.container}>
         <BottomSheet

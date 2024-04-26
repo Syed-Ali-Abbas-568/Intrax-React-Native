@@ -9,14 +9,8 @@ const { width, height } = Dimensions.get('window');
 const LocationComponent = ({ onLocationChange, closestStation, onStationInfoUpdate,source,destination }) => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [previousDest, setPreviousDest] = useState(null);
 
-  useEffect(() => {
-    if (destination !== undefined&&destination !== null) {
-      // Update previousDest only if destination is defined
-      setPreviousDest(destination);
-    } 
-  }, [destination]);
+
  
 
 
@@ -177,23 +171,22 @@ const LocationComponent = ({ onLocationChange, closestStation, onStationInfoUpda
             >
              
               <Image
-                source={require('../../assets/src_dest.png')}
+                source={require('../../assets/src_dest.gif')}
                 style={{ width: 40, height: 40 }} // Adjust the size as needed
               />
             </Marker>)
           }
-          {console.log("This is child destination",previousDest)}
-          {previousDest&&(<Marker
+          {destination&&(<Marker
               coordinate={{
-                latitude: previousDest.latitude,
-                longitude: previousDest.longitude,
+                latitude: destination.latitude,
+                longitude: destination.longitude,
               }}
-              title={previousDest.title}
-              description={`previousDest.description+${previousDest.latitude}`}
+              title={destination.title}
+              description={destination.description}
             >
              
               <Image
-                source={require('../../assets/src_dest.png')}
+                source={require('../../assets/src_dest.gif')}
                 style={{ width: 40, height: 40 }} // Adjust the size as needed
               />
             </Marker>)
