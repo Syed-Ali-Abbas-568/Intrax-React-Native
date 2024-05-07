@@ -1,7 +1,7 @@
 
 import axios from "axios";
 
-const URL = 'http://192.168.0.112:8001';
+const URL = 'http://192.168.100.75:8001';
 
 export const addUser = async (newUserData) => {
   console.log('i am called');

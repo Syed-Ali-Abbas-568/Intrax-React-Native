@@ -59,18 +59,7 @@ export default Signup = ({navigation}) => {
         <View style={styles.container}>
           <Text style={styles.textStyle}>SignIn</Text>
 
-          <View style={styles.horRule} />
-
-          <View style={styles.authStyle}>
-            <TouchableOpacity style={[styles.button, { minWidth: 150 }]}>
-              <Text style={styles.buttonText}>Google</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, { minWidth: 150 }]}>
-              <Text style={styles.buttonText}>Facebook</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.horRule} />
+    
 
           <Text style={styles.label}>Password</Text>
           <View style={styles.inputStyle}>

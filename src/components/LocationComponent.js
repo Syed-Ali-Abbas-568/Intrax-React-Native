@@ -6,12 +6,18 @@ import * as Location from 'expo-location';
 
 const { width, height } = Dimensions.get('window');
 
-const LocationComponent = ({ onLocationChange, closestStation, onStationInfoUpdate }) => {
+const LocationComponent = ({ onLocationChange, closestStation, onStationInfoUpdate,source,destination }) => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
+
+ 
+
+
   const [stationInfo, setStationInfo] = useState(null);
   const apiKey = "AIzaSyDRRMtathJaJoAfGPMtQ8dztAZxl2Dl_Vs";
+
+ 
 
 
   //Hardcoded List of Stations this will be changed to to reterive stations form databases
@@ -152,6 +158,56 @@ const LocationComponent = ({ onLocationChange, closestStation, onStationInfoUpda
               />
             </Marker>
           ))}
+
+          {/*Source Destination Plot*/}
+        
+           { source&&(<Marker
+              coordinate={{
+                latitude: source.latitude,
+                longitude: source.longitude,
+              }}
+              title={source.title}
+              description={source.description}
+            >
+             
+              <Image
+                source={require('../../assets/src_dest.gif')}
+                style={{ width: 40, height: 40 }} // Adjust the size as needed
+              />
+            </Marker>)
+          }
+          {destination&&(<Marker
+              coordinate={{
+                latitude: destination.latitude,
+                longitude: destination.longitude,
+              }}
+              title={destination.title}
+              description={destination.description}
+            >
+             
+              <Image
+                source={require('../../assets/src_dest.gif')}
+                style={{ width: 40, height: 40 }} // Adjust the size as needed
+              />
+            </Marker>)
+          }
+         { /*<Marker
+              coordinate={{
+                latitude: 31.4216463,
+                longitude: 74.3653453,
+              }}
+              title= "Destination"
+              description= "This is your destination location."
+            >
+             
+              <Image
+                source={require('../../assets/src_dest.png')}
+                style={{ width: 40, height: 40 }} // Adjust the size as needed
+              />
+            </Marker>*/
+}
+         
+
         </MapView>
 
 
