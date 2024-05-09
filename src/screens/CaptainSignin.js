@@ -14,7 +14,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { loginCaptain } from "../services/captainapi";
 
-const CaptainSignin = ({navigation}) => {
+const CaptainSignin = ({ navigation }) => {
   // State variables
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -44,7 +44,7 @@ const CaptainSignin = ({navigation}) => {
       if (response.error !== "No captain found.") {
         navigation.reset({
           index: 0,
-          routes: [{ name: 'RoutePlannerCaptain', params:  {responseData: response }}]
+          routes: [{ name: 'Captain Dashboard', params: { responseData: response } }]
         });
       } else {
         setError("Email or Password is incorrect.");

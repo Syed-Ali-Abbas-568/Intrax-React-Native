@@ -6,179 +6,57 @@ import SearchBar from "../components/SearchBar";
 import LocationComponent from "../components/LocationComponent";
 
 
-const App = ({ route, navigation }) => {
+const App = ({ route, navigation, responseData }) => {
 
-  const response = route.params.responseData
-  const [sheetOpen, setSheetOpen] = useState(true)
-  const [isActive, setIsActive] = useState(false); // State variable for toggle switch
-  // hooks
-  const sheetRef = useRef(null);
+  // const response = route.params.responseData
+  // const [sheetOpen, setSheetOpen] = useState(true)
+  // const [isActive, setIsActive] = useState(false); // State variable for toggle switch
+  // // hooks
+  // const sheetRef = useRef(null);
 
-  // variables
-  const data = useMemo(
-    () =>
-      Array(50)
-        .fill(0)
-        .map((_, index) => `index-${index}`),
-    []
-  );
-  const snapPoints = useMemo(() => ["45%", "90%"], []);
+  // // variables
+  // const data = useMemo(
+  //   () =>
+  //     Array(50)
+  //       .fill(0)
+  //       .map((_, index) => `index-${index}`),
+  //   []
+  // );
+  // const snapPoints = useMemo(() => ["45%", "90%"], []);
 
-  // callbacks
-  const handleSheetChange = useCallback((index) => {
-    setSheetOpen(index);
-  }, []);
-  const handleSnapPress = useCallback((index) => {
-    sheetRef.current?.snapToIndex(index);
-  }, []);
-  const handleClosePress = useCallback(() => {
-    sheetRef.current?.close();
-  }, []);
+  // // callbacks
+  // const handleSheetChange = useCallback((index) => {
+  //   setSheetOpen(index);
+  // }, []);
+  // const handleSnapPress = useCallback((index) => {
+  //   sheetRef.current?.snapToIndex(index);
+  // }, []);
+  // const handleClosePress = useCallback(() => {
+  //   sheetRef.current?.close();
+  // }, []);
 
-  // render
-  const renderItem = useCallback(
-    (item) => (
-      <View key={item} style={styles.itemContainer}>
-        <Text>{item}</Text>
-      </View>
-    ),
-    []
-  );
+  // // render
+  // const renderItem = useCallback(
+  //   (item) => (
+  //     <View key={item} style={styles.itemContainer}>
+  //       <Text>{item}</Text>
+  //     </View>
+  //   ),
+  //   []
+  // );
 
-  // Function to handle toggle switch change
-  const toggleSwitch = () => {
-    setIsActive(previousState => !previousState); // Toggle isActive state
-  };
+  // // Function to handle toggle switch change
+  // const toggleSwitch = () => {
+  //   setIsActive(previousState => !previousState); // Toggle isActive state
+  // };
+
+
+
 
   return (
     <View>
-      <View style={[{ flex: 0.5 }, { flexDirection: 'column' }]}>
 
-        <LocationComponent />
-
-      </View>
-      {/* Toggle switch */}
-      <View style={styles.toggleContainer}>
-        <Text style={styles.toggleLabel}>Active</Text>
-        <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isActive ? "#FFFFFF" : "#f4f3f4"}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleSwitch}
-          value={isActive}
-        />
-      </View>
-      <View style={styles.container}>
-
-        <BottomSheet
-          ref={sheetRef}
-          index={snapPoints.length - 1} // Set initial index to the last snap point
-          snapPoints={snapPoints}
-          onChange={handleSheetChange}
-          enableContentPanningGesture // Enable dragging the content itself
-        >
-          <BottomSheetScrollView contentContainerStyle={styles.contentContainer}>
-
-
-            {sheetOpen ? <><View style={styles.userTab}>
-              <Image source={require("../../assets/user2.png")} ></Image>
-              <View style={[{ flex: 1 }, { flexDirection: 'column' }]}>
-                <Text style={styles.nameStyle}>User Name</Text>
-              </View>
-            </View>
-              <View style={[styles.bottomSheetContainer]}>
-
-                <Image source={require("../../assets/from_to.png")} style={{ alignSelf: 'center' }}></Image>
-                <View style={[{ flexDirection: 'column' }]}>
-                  <View style={styles.bottomSheetSubContainer}>
-
-
-
-                    <Text style={styles.label}>From : </Text>
-                    <BottomSheetTextInput style={styles.inputStyle} />
-                  </View>
-                  <View style={styles.horRule} />
-                  <View style={styles.bottomSheetSubContainer}>
-
-                    <Text style={styles.label}>To :      </Text>
-                    <BottomSheetTextInput style={styles.inputStyle} />
-                  </View>
-                </View>
-
-
-              </View></> : <SearchBar />}
-
-            <View style={styles.nearestLocStyle} >
-              <Image source={require("../../assets/ic_loc.png")} ></Image>
-              <View  >
-                <Text style={styles.label}>Find Nearest Station</Text>
-              </View>
-            </View>
-
-
-
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('StartRide', { responseData: response })}>
-              <Text style={styles.buttonText}>Continue</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.arrival} >
-              <Text style={styles.buttonText}>Estimated Bus arrival: 12 Mins</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.arrival} >
-              <Text style={styles.buttonText}>Estimated Bus arrival: 12 Mins</Text>
-            </TouchableOpacity>
-
-            <View style={[{ paddingHorizontal: 20 }, { minWidth: '80%' }]}>
-              <Text style={styles.recentStyle}>RECENT</Text>
-
-              <View style={[{ flexDirection: 'row' }]}>
-                <Image source={require("../../assets/ic_place.png")} style={{ alignSelf: 'center' }}></Image>
-                <View style={[{ flexDirection: 'column' }, { margin: 20 }, { minWidth: '80%' }]}>
-                  <Text style={styles.stationStyle}>Railway Station</Text>
-                  <Text style={styles.cityStyle}>Lahore</Text>
-                </View>
-              </View>
-
-              <View style={[{ flexDirection: 'row' }]}>
-                <Image source={require("../../assets/ic_place.png")} style={{ alignSelf: 'center' }}></Image>
-                <View style={[{ flexDirection: 'column' }, { margin: 20 }, { minWidth: '80%' }]}>
-                  <Text style={styles.stationStyle}>Railway Station</Text>
-                  <Text style={styles.cityStyle}>Lahore</Text>
-                </View>
-              </View>
-
-              <View style={[{ flexDirection: 'row' }]}>
-                <Image source={require("../../assets/ic_place.png")} style={{ alignSelf: 'center' }}></Image>
-                <View style={[{ flexDirection: 'column' }, { margin: 20 }, { minWidth: '80%' }]}>
-                  <Text style={styles.stationStyle}>Railway Station</Text>
-                  <Text style={styles.cityStyle}>Lahore</Text>
-                </View>
-              </View>
-
-
-              <View style={[{ flexDirection: 'row' }]}>
-                <Image source={require("../../assets/ic_place.png")} style={{ alignSelf: 'center' }}></Image>
-                <View style={[{ flexDirection: 'column' }, { margin: 20 }, { minWidth: '80%' }]}>
-                  <Text style={styles.stationStyle}>Railway Station</Text>
-                  <Text style={styles.cityStyle}>Lahore</Text>
-                </View>
-              </View>
-
-              <View style={[{ flexDirection: 'row' }]}>
-                <Image source={require("../../assets/ic_place.png")} style={{ alignSelf: 'center' }}></Image>
-                <View style={[{ flexDirection: 'column' }, { margin: 20 }, { minWidth: '80%' }]}>
-                  <Text style={styles.stationStyle}>Railway Station</Text>
-                  <Text style={styles.cityStyle}>Lahore</Text>
-                </View>
-              </View>
-
-            </View>
-
-
-          </BottomSheetScrollView>
-        </BottomSheet>
-      </View>
+      <Text>response.data</Text>
 
     </View>
   );
@@ -329,6 +207,3 @@ const styles = StyleSheet.create({
 });
 
 export default App;
-/**
- ,{borderWidth:1},{borderColor:'black'}
- */

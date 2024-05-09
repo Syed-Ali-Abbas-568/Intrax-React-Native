@@ -60,7 +60,7 @@ const CustomDrawer = ({ navigation, ...props }) => {
             </View>
 
 
-            <Logout navigation={navigation}/>
+            <Logout navigation={navigation} />
         </View>
     )
 
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
     profile: {
         flexDirection: 'column',
         paddingVertical: 20,
-        justifyContent:'center',
-        alignItems:'center'
+        justifyContent: 'center',
+        alignItems: 'center'
 
 
 
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "rgba(255, 255, 255, 1.0)",
         justifyContent: 'center',
-        width:'40%'
+        width: '40%'
     },
     drawerstyle:
     {
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
         color: "#352555",
 
     },
-    
+
 
 
 

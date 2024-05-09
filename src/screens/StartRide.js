@@ -1,19 +1,30 @@
 import React, { } from "react";
 import { StyleSheet, View, Text, Pressable, Image, ImageBackground } from "react-native";
+
 import { Ionicons } from "@expo/vector-icons";
 
+import MapView, { Marker } from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
+
 const StartRide = ({ navigation }) => {
-
-
     return (
-
         <View style={styles.container}>
-            <ImageBackground
-                source={require('../../assets/active_state.png')}
-                style={styles.backgroundImage}
-            >
+            {/* MapView as background */}
+            <MapView
+                style={styles.map}
+                initialRegion={{
+                    latitude: 31.481283147811784,
+                    longitude: 74.30307372894235,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01,
+                }}
+            />
 
+
+            {/* Content over the map */}
+            <View style={styles.content}>
                 <View style={styles.bottomsheet}>
+                    <Text>Display me</Text>
                     <Pressable style={styles.button}>
                         <Text style={styles.buttontext} onPress={() => navigation.reset({
                             index: 0,
@@ -21,103 +32,76 @@ const StartRide = ({ navigation }) => {
                         })}>Start Ride</Text>
                     </Pressable>
                     <Pressable style={styles.ride}>
-
-
-
-                        <Image style={styles.picture}
-                            source={require('../../assets/finish.png')} />
-
-
+                        <Image style={styles.picture} source={require('../../assets/finish.png')} />
                         <Text style={styles.destinationBold}>Next Stop:</Text>
                         <Text style={styles.destination}> XYZ Station</Text>
-
                     </Pressable>
-
                 </View>
-            </ImageBackground>
-
-
+            </View>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-
     container: {
         flex: 1,
-        flexDirection: 'column'
+        position: 'relative',
     },
-    backgroundImage: {
-        flex: 1,
-        resizeMode: "stretch",
-        flexDirection: 'column-reverse'
+    map: {
+        flex: 0.80,
+        //...StyleSheet.absoluteFillObject,
 
 
     },
-    bottomsheet:
-    {
+    content: {
         flex: 0.25,
-        borderTopLeftRadius: 32, // Only top-left corner rounded
-        borderTopRightRadius: 32, // Only top-right corner rounded
-
-        backgroundColor: "#FFFFFF",
-        shadowColor: "rgba(0, 0, 0, 0.1)",
-        shadowOffset: {
-            width: 0,
-            height: 0
-        },
-        shadowRadius: 15,
-        shadowOpacity: 1,
-        borderStyle: 'solid',
-        borderWidth: 1,
-        borderColor: "rgba(151, 173, 182, 0.6)"
-
-
-    },
-    buttontext: {
-        color: '#FFF',
-        fontSize: 20,
-        fontWeight: '700',
         justifyContent: 'center',
-        textAlign: 'center',
-        marginVertical: 8
+        alignItems: 'center',
+    },
+    bottomsheet: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 30,
+        width: "100%",
+        height: "100%"
+
+
 
     },
     button: {
-        marginTop: 35,
-        backgroundColor: '#40B59F',
-        borderRadius: 10,
-        marginHorizontal: 40,
-        height: 40,
+        backgroundColor: 'blue',
+        padding: 10,
+        borderRadius: 5,
+        marginBottom: 10,
     },
-    ride:
-    {
-
+    buttontext: {
+        color: 'white',
+        textAlign: 'center',
+    },
+    ride: {
         flexDirection: 'row',
-        justifyContent: 'center', // Adjust as needed (space-around, space-evenly, etc.)
-        width: '70%', // Adjust the width of the row as needed
         alignItems: 'center',
-        alignSelf: 'center'
-
-
-
     },
-    destinationBold:
-    {
-        fontSize: 16,
+    picture: {
+        width: 20,
+        height: 20,
+        marginRight: 10,
+    },
+    destinationBold: {
         fontWeight: 'bold',
-
     },
-    destination:
-    {
-        fontSize: 16,
+    destination: {
+        marginLeft: 5,
     },
-    picture:
-    {
-        marginTop: 5
-    }
-
-
 });
 
 export default StartRide;
+
+
+
+
+
+
+
+
+
