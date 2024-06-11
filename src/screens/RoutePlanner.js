@@ -1,299 +1,79 @@
+// /App.js
 import React, { useCallback, useRef, useMemo, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  Image,
-  TouchableOpacity,
-} from "react-native";
-import BottomSheet, {
-  BottomSheetScrollView,
-  BottomSheetTextInput,
-} from "@gorhom/bottom-sheet";
+import { StyleSheet, View } from "react-native";
+import LocationInput from "../components/LocationInput";
+import BottomSheetContent from "../components/BottomSheetContent";
 import LocationComponent from "../components/LocationComponent";
-import SearchBar from "../components/SearchBar";
-import FindNearestStationButton from "../components/FindNearesetStationButton";
-
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { ANDRIOD_GOOGLE_API_KEY } from "../../keys";
-
-
 
 const App = ({ navigation }) => {
   const [sourceLocation, setSourceLocation] = useState(null);
   const [destinationLocation, setDestinationLocation] = useState(null);
-  const [locations, setLocations] = useState([]);
   const [showDestinationInput, setShowDestinationInput] = useState(false);
+  const [closestStation, setClosestStation] = useState(null);
+  const [stationArrivalInfo, setStationArrivalInfo] = useState(null);
+  const [sheetOpen, setSheetOpen] = useState(true);
 
+  const sheetRef = useRef(null);
 
+  const snapPoints = useMemo(() => ["30%", "80%"], []);
 
-  const [toggler, setToggler] = useState('');
+  const handleSheetChange = useCallback((index) => {
+    setSheetOpen(index);
+  }, []);
+
   const handleLocationSelection = (location, type) => {
-    
     if (type === "source") {
-
-      if(location!=null&&location!=undefined){
       setSourceLocation(location);
-      }
     } else if (type === "destination") {
-      if(location!=null&&location!=undefined){
-        
       setDestinationLocation(location);
-    }
     }
   };
 
-  const [closestStation, setClosestStation] = useState(null);
-  const [stationArrivalInfo, setStationArrivalInfo] = useState(null);
   const handleStationUpdate = (station) => {
     setClosestStation(station);
   };
 
   const handleStationInfo = (stationInfo) => {
     setStationArrivalInfo(stationInfo);
-
   };
 
-
-  const [sheetOpen, setSheetOpen] = useState(true)
-  // hooks
-  const sheetRef = useRef(null);
-
-  // variables
-  const data = useMemo(
-    () =>
-      Array(50)
-        .fill(0)
-        .map((_, index) => `index-${index}`),
-    []
-  );
-  const snapPoints = useMemo(() => ["30%", "80%"], []);
-
-  // callbacks
-  const handleSheetChange = useCallback((index) => {
-    setSheetOpen(index);
-  }, []);
-  // const handleSnapPress = useCallback((index) => {
-  //   sheetRef.current?.snapToIndex(index);
-  // }, []);
-  // const handleClosePress = useCallback(() => {
-  //   sheetRef.current?.close();
-  // }, []);
-
-  // // render
-  // const renderItem = useCallback(
-  //   (item) => (
-  //     <View key={item} style={styles.itemContainer}>
-  //       <Text>{item}</Text>
-  //     </View>
-  //   ),
-  //   []
-  // );
-  // ///[{zIndex:1000},{position:"absolute"},{top:10,borderWidth:3}
   return (
-   
     <View style={[{ flex: 1 }, { flexDirection: 'column' }]}>
-      <LocationComponent closestStation={closestStation} onStationInfoUpdate={handleStationInfo} source={sourceLocation} destination={destinationLocation} />
-      {/*console.log("parent rerenders")}
-      {console.log("Source",sourceLocation)}
-  {console.log("Dest",destinationLocation)*/}
-      <View style={styles.srcStyle}>
-        <GooglePlacesAutocomplete
-          placeholder="Source"
-          query={{ key: ANDRIOD_GOOGLE_API_KEY }}
-          fetchDetails={true}
-          onPress={(data, details = null) => { console.log(details.geometry.location.lat, details.geometry.location.lng);
-                                                if(details){
-                                                    // console.log(details.geometry.location.lat, details.geometry.location.lng);
-                                                     const location = {
-                                                       latitude: details.geometry.location.lat,
-                                                       longitude: details.geometry.location.lng,
-                                                       title: "Source",
-                                                       description: "This is your Source location."
-                                                     };
-                                                   
-                                                   handleLocationSelection(location, "source"); // Pass type as well
-                                                 
-                                                   
-                                                } }}
-          onFail={error => console.log(error)}
-          onNotFound={() => console.log('no results')}
-          textInputProps={{
-            onFocus : () => setShowDestinationInput(false),
-            onBlur  : () => setShowDestinationInput(true)
-          }} 
+      <LocationComponent
+        closestStation={closestStation}
+        onStationInfoUpdate={handleStationInfo}
+        source={sourceLocation}
+        destination={destinationLocation}
+      />
+      <LocationInput
+        type="source"
+        onLocationSelect={handleLocationSelection}
+        showDestinationInput={showDestinationInput}
+        setShowDestinationInput={setShowDestinationInput}
+        styles={styles}
+      />
+      {showDestinationInput && (
+        <LocationInput
+          type="destination"
+          onLocationSelect={handleLocationSelection}
+          showDestinationInput={showDestinationInput}
+          setShowDestinationInput={setShowDestinationInput}
+          styles={styles}
         />
-
-      </View>
-      {showDestinationInput && (<View style={styles.dstStyle}>
-        <GooglePlacesAutocomplete
-  placeholder="Destination"
-  query={{ key: ANDRIOD_GOOGLE_API_KEY }}
-  fetchDetails={true}
-  onPress={(data, details = null) => {
-    if (details) {
-     // console.log(details.geometry.location.lat, details.geometry.location.lng);
-      const location = {
-        latitude: details.geometry.location.lat,
-        longitude: details.geometry.location.lng,
-        title: "Destination",
-        description: "This is your destination location."
-      };
-    
-    handleLocationSelection(location, "destination"); // Pass type as well
-  
-    }
-  }}
-  onFail={error => console.log(error)}
-  onNotFound={() => console.log('no results')}
-/>
-
-
-      </View>)}
-
-
-
+      )}
       <View style={styles.container}>
-        <BottomSheet
-          ref={sheetRef}
-          index={snapPoints.length - 1} // Set initial index to the last snap point
+        <BottomSheetContent
+          sheetRef={sheetRef}
           snapPoints={snapPoints}
-          onChange={handleSheetChange}
-          enableContentPanningGesture // Enable dragging the content itself
-        >
-          <BottomSheetScrollView
-            contentContainerStyle={styles.contentContainer}
-          >
-
-            <View style={styles.userTab}>
-              <Image source={require("../../assets/user2.png")}></Image>
-              <View style={[{ flex: 1 }, { flexDirection: "column" }]}>
-                <Text style={styles.nameStyle}>User Name</Text>
-              </View>
-            </View>
-
-
-
-            <FindNearestStationButton onStationUpdate={handleStationUpdate} />
-
-
-
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigation.navigate("StartRide")}
-            >
-              <Text style={styles.buttonText}>Continue</Text>
-            </TouchableOpacity>
-
-            {stationArrivalInfo && (
-              <TouchableOpacity style={styles.arrival}>
-                <Text style={styles.buttonText}>Distance to Station: {stationArrivalInfo.distance}km </Text>
-                <Text style={styles.buttonText}>Estimated Arrival Time: {stationArrivalInfo.duration}min</Text>
-              </TouchableOpacity>
-            )}
-
-            {stationArrivalInfo && (
-              <TouchableOpacity style={styles.arrival}>
-                <Text style={styles.buttonText}>Estimated Bus arrival: 12 Mins</Text>
-              </TouchableOpacity>
-            )}
-
-
-            <View style={[{ paddingHorizontal: 20 }, { minWidth: '80%' }]}>
-              <Text style={styles.recentStyle}>RECENT</Text>
-
-              <View style={[{ flexDirection: "row" }]}>
-                <Image
-                  source={require("../../assets/ic_place.png")}
-                  style={{ alignSelf: "center" }}
-                ></Image>
-                <View
-                  style={[
-                    { flexDirection: "column" },
-                    { margin: 20 },
-                    { minWidth: "80%" },
-                  ]}
-                >
-                  <Text style={styles.stationStyle}>Railway Station</Text>
-                  <Text style={styles.cityStyle}>Lahore</Text>
-                </View>
-              </View>
-
-              <View style={[{ flexDirection: "row" }]}>
-                <Image
-                  source={require("../../assets/ic_place.png")}
-                  style={{ alignSelf: "center" }}
-                ></Image>
-                <View
-                  style={[
-                    { flexDirection: "column" },
-                    { margin: 20 },
-                    { minWidth: "80%" },
-                  ]}
-                >
-                  <Text style={styles.stationStyle}>Railway Station</Text>
-                  <Text style={styles.cityStyle}>Lahore</Text>
-                </View>
-              </View>
-
-              <View style={[{ flexDirection: "row" }]}>
-                <Image
-                  source={require("../../assets/ic_place.png")}
-                  style={{ alignSelf: "center" }}
-                ></Image>
-                <View
-                  style={[
-                    { flexDirection: "column" },
-                    { margin: 20 },
-                    { minWidth: "80%" },
-                  ]}
-                >
-                  <Text style={styles.stationStyle}>Railway Station</Text>
-                  <Text style={styles.cityStyle}>Lahore</Text>
-                </View>
-              </View>
-
-              <View style={[{ flexDirection: "row" }]}>
-                <Image
-                  source={require("../../assets/ic_place.png")}
-                  style={{ alignSelf: "center" }}
-                ></Image>
-                <View
-                  style={[
-                    { flexDirection: "column" },
-                    { margin: 20 },
-                    { minWidth: "80%" },
-                  ]}
-                >
-                  <Text style={styles.stationStyle}>Railway Station</Text>
-                  <Text style={styles.cityStyle}>Lahore</Text>
-                </View>
-              </View>
-
-              <View style={[{ flexDirection: "row" }]}>
-                <Image
-                  source={require("../../assets/ic_place.png")}
-                  style={{ alignSelf: "center" }}
-                ></Image>
-                <View
-                  style={[
-                    { flexDirection: "column" },
-                    { margin: 20 },
-                    { minWidth: "80%" },
-                  ]}
-                >
-                  <Text style={styles.stationStyle}>Railway Station</Text>
-                  <Text style={styles.cityStyle}>Lahore</Text>
-                </View>
-              </View>
-            </View>
-          </BottomSheetScrollView>
-        </BottomSheet >
-      </View >
-
-    </View>);
-
+          handleSheetChange={handleSheetChange}
+          stationArrivalInfo={stationArrivalInfo}
+          handleStationUpdate={handleStationUpdate}
+          navigation={navigation}
+          styles={styles}
+        />
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({

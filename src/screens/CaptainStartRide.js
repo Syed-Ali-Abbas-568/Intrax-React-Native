@@ -7,9 +7,11 @@ import MapView, { Marker, Polyline } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 
 import { useRoute } from '@react-navigation/native';
-import { getAssignmentByID, getAllStations, updateBusLocation } from "../services/captainapi";
+import { getAssignmentByID, getAllStations, updateBusLocation, getStationsByID } from "../services/captainapi";
 
 import * as Location from 'expo-location';
+import NoShift from "../components/NoShift";
+import calculateDistanceAndTime from "../helpers/distanceCalculationAPI";
 
 const CaptainStartRide = ({ navigation }) => {
 
@@ -30,9 +32,31 @@ const CaptainStartRide = ({ navigation }) => {
     const [errorMsg, setErrorMsg] = useState(null);
 
 
+    //States to manage next station
+    const [counter, setCounter] = useState(1)
+    const [stationList, setStationList] = useState(null)
+    const [nextStation, setNextStation] = useState(null)
+    const [distanceTime, setDistanceTime] = useState(null)
+    const [stationFlag, setStationFlag] = useState(true)
+
+    //Reached Flag
+
+    const [reached, setReached] = useState(0)
+    const [isupdated, setIsUpdated] = useState(false)
 
 
 
+    //subscrition variables
+    const [subscription, setSubscription] = useState(null)
+
+
+
+    //State if the user does not have any shift assigned to him
+    const [isShiftAssinged, setisShiftAssigned] = useState(false)
+
+    //Button Text: 
+
+    const [buttonatt, setButtonatt] = useState("Start Ride")
 
 
     useEffect(() => {
@@ -43,6 +67,10 @@ const CaptainStartRide = ({ navigation }) => {
     }, [])
 
 
+
+
+
+
     async function getShift() {
 
         try {
@@ -51,16 +79,28 @@ const CaptainStartRide = ({ navigation }) => {
 
             const dir = JSON.parse(ass.assignedRoute.directions)
 
-            console.log(ass.assignedBus)
+
+            //Route Infromation:
+            //console.log("This is the station", ass.assignedRoute.stations)
+
+
+            const statList = await getStationsByID(ass.assignedRoute.stations)
+            setStationList(statList)
+            setNextStation(statList[1])
+
+
+            //  console.log(ass.assignedBus)
             setBus(ass.assignedBus)
             setAssignment(ass)
             setDirections(dir)
             setDisplayRoute(true)
+            setisShiftAssigned(true)
 
         } catch (err) {
 
             setDisplayRoute(false)
             console.log('Error occured when fetching Shifts:');
+            setisShiftAssigned(false)
         }
 
     }
@@ -85,49 +125,166 @@ const CaptainStartRide = ({ navigation }) => {
 
 
 
-    useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
+    // useEffect(() => {
+    //     (async () => {
+    //         let { status } = await Location.requestForegroundPermissionsAsync();
+    //         if (status !== 'granted') {
+    //             setErrorMsg('Permission to access location was denied');
+    //             return;
+    //         }
+
+    //         let locationSubscription = await Location.watchPositionAsync(
+    //             {
+    //                 accuracy: Location.Accuracy.High,
+    //                 // timeInterval: 1000, // Update location every 2 seconds (adjust as needed)
+    //             },
+    //             async (newLocation) => {
+
+
+    //                 if (nextStation) {
+    //                     const distTime = await calculateDistanceAndTime(newLocation.coords, { "latitude": nextStation.latitude, "longitude": nextStation.longitude })
+    //                     let arr = distTime.distance.split(" ")
+
+    //                     if (arr[1] === "m" && arr[0] <= 50) {
+
+    //                         console.log("counter value is:", counter)
+    //                         if ((counter + 1) < stationList.length) {
+    //                             setNextStation(stationList[counter + 1])
+
+    //                         }
+    //                         setCounter(prevCounter => prevCounter + 1);
+    //                     }
+
+    //                     setDistanceTime(distTime)
+    //                     //console.log("distance time", distTime)
+    //                 }
+
+
+    //                 setLocation(newLocation.coords);
+    //                 animateToUserLocation(newLocation.coords);
+    //                 if (displayRoute) {
+    //                     console.log("I am called")
+    //                     await updateBus(newLocation.coords)
+    //                 }
+
+
+    //             }
+    //         );
+
+    //         return () => {
+    //             if (locationSubscription) {
+    //                 locationSubscription.remove();
+    //             }
+    //         };
+    //     })();
+    // }, []);
+
+    const requestPermissions = async () => {
+        try {
+            const { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 setErrorMsg('Permission to access location was denied');
-                return;
+                return false;
             }
+            return true;
+        } catch (error) {
+            console.log("Error occurred while getting permissions:", error);
+            return false;
+        }
+    };
 
-            let locationSubscription = await Location.watchPositionAsync(
+    const setupLocationUpdates = async () => {
+        try {
+            const hasPermission = await requestPermissions();
+            if (!hasPermission) return;
+
+            subscription1 = await Location.watchPositionAsync(
                 {
                     accuracy: Location.Accuracy.High,
-                    timeInterval: 2000, // Update location every 2 seconds (adjust as needed)
+                    timeInterval: 500, // Update location every 1 second
                 },
-                (newLocation) => {
-                    setLocation(newLocation.coords);
-                    animateToUserLocation(newLocation.coords);
-                    if (displayRoute) {
-                        updateBus(newLocation.coords)
+                async (newLocation) => {
+                    let distTime;
+
+                    try {
+                        if (!nextStation) return;
+
+                        distTime = await calculateDistanceAndTime(newLocation.coords, { "latitude": nextStation.latitude, "longitude": nextStation.longitude });
+                        let arr = distTime.distance.split(" ");
+
+                        if (arr[1] === "m" && arr[0] < 50 && !isupdated) {
+
+
+                            setIsUpdated(true)
+
+                            if ((counter) < stationList.length) {
+                                console.log("counter value:", counter, nextStation.name)
+                                setNextStation(() => stationList[counter + 1])
+                                setCounter(prevCounter => prevCounter + 1);
+                                console.log(nextStation.name)
+
+                            }
+
+
+                        } else if (arr[1] === "km" && arr[0] > 1) {
+                            setIsUpdated(false);
+                        }
+
+                        setDistanceTime(distTime);
+                        setLocation(newLocation.coords);
+                        animateToUserLocation(newLocation.coords);
+
+                        if (displayRoute && nextStation) {
+                            await updateBus(newLocation.coords, distTime.duration, nextStation._id);
+                        }
+                    } catch (error) {
+                        console.log("Error occurred during location update:", error);
                     }
-
-
                 }
             );
 
+            setSubscription(subscription1)
+        } catch (error) {
+            console.log("Error occurred while setting up location updates:", error);
+        }
+    };
+
+
+
+
+
+
+    useEffect(() => {
+
+
+        if (displayRoute) {
+            console.log("run")
+            setupLocationUpdates();
+            console.log()
+
+            // Cleanup on component unmount
             return () => {
-                if (locationSubscription) {
-                    locationSubscription.remove();
+                if (subscription) {
+                    subscription.remove();
                 }
             };
-        })();
-    }, []);
+        }
+    }, [displayRoute, nextStation]);
 
 
 
 
 
-    async function updateBus(coords) {
+
+
+
+    async function updateBus(coords, timeOfArrival, nextStation) {
 
         try {
 
 
-            const res = await updateBusLocation(bus._id, { latitude: coords.latitude, longitude: coords.longitude })
-            console.log(res)
+            const res = await updateBusLocation(bus._id, { latitude: coords.latitude, longitude: coords.longitude }, timeOfArrival, nextStation)
+            //console.log("updated location is : ", coords)
         }
         catch (err) {
             console.log("error updating bus location")
@@ -161,111 +318,121 @@ const CaptainStartRide = ({ navigation }) => {
 
 
     return (
-        <View style={styles.container}>
-            {errorMsg ? (
-                <Text>{errorMsg}</Text>
-            ) : location ? (
-                <MapView
-                    style={styles.map}
-                    ref={mapViewRef}
 
-                    initialRegion={{
-                        latitude: 31.481283147811784,
-                        longitude: 74.30307372894235,
-                        latitudeDelta: 0.01,
-                        longitudeDelta: 0.01,
-                    }}
+        isShiftAssinged ? (
 
+            <View style={styles.container}>
 
-                >
+                {errorMsg ? (
+                    <Text>{errorMsg}</Text>
+                ) : location ? (
+                    <MapView
+                        style={styles.map}
+                        ref={mapViewRef}
 
-
-                    <Marker
-                        coordinate={{
-                            latitude: location.latitude,
-                            longitude: location.longitude,
+                        initialRegion={{
+                            latitude: 31.481283147811784,
+                            longitude: 74.30307372894235,
+                            latitudeDelta: 0.01,
+                            longitudeDelta: 0.01,
                         }}
-                        title={displayRoute ? `Bus Number: ${bus.busNumber}` : "BusNumber"}
-                        description={displayRoute ? `Bus Model: ${bus.licensePlateNumber}` : "BusPlate"}
-
-
-
 
 
                     >
-                        <Image
-                            source={require('../../assets/bus.png')}
-                            style={{ width: 30, height: 30 }} // Adjust the width and height as needed
-                        />
-
-                    </Marker>
 
 
-
-
-
-
-                    {displayRoute &&
-                        directions.legs.map((leg, lIndex) => (
-                            <React.Fragment key={lIndex}>
-                                {leg.steps.map((step, sIndex) => (
-                                    <React.Fragment key={sIndex}>
-                                        {step.path && (
-                                            <Polyline
-                                                key={`${lIndex}_${sIndex}`}
-                                                coordinates={step.path.map(point => ({
-                                                    latitude: point.lat,
-                                                    longitude: point.lng
-                                                }))}
-                                                strokeColor="#FF0000"
-                                                strokeWidth={5}
-                                            />
-                                        )}
-                                    </React.Fragment>
-                                ))}
-                            </React.Fragment>
-                        ))}
-                    {stations && stations.map((station, index) => (
                         <Marker
-                            key={index}
                             coordinate={{
-                                latitude: station.latitude,
-                                longitude: station.longitude,
+                                latitude: location.latitude,
+                                longitude: location.longitude,
                             }}
-                            title={station.name}
-                            description={station.description}
+                            title={displayRoute ? `Bus Number: ${bus.busNumber}` : "BusNumber"}
+                            description={displayRoute ? `Bus Model: ${bus.licensePlateNumber}` : "BusPlate"}
                         >
-                            {/* Custom bus icon for the marker */}
                             <Image
-                                source={require('../../assets/finish.png')}
-                                style={{ width: 40, height: 40 }} // Adjust the size as needed
+                                source={require('../../assets/bus.png')}
+                                style={{ width: 30, height: 30 }} // Adjust the width and height as needed
                             />
+
                         </Marker>
-                    ))}
-                </MapView>
-            ) : (
-                <Text>Loading...</Text>
-            )}
-            {/* Content over the map */}
-            <View style={styles.content}>
-                <View style={styles.bottomsheet}>
-                    <Text>{responseData.name}</Text>
-                    <Pressable style={styles.button}>
-                        <Text style={styles.buttontext} onPress={() => navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'Feedback' }],
-                        })}>Start Ride</Text>
-                    </Pressable>
-                    <Pressable style={styles.ride}>
-                        <Image style={styles.picture} source={require('../../assets/finish.png')} />
-                        <Text style={styles.destinationBold}>Next Stop:</Text>
-                        <Text style={styles.destinationBold}>Time Left:</Text>
-                        <Text style={styles.destinationBold}>Distance Left:</Text>
-                        <Text style={styles.destination}> XYZ Station</Text>
-                    </Pressable>
+
+
+
+
+
+
+                        {displayRoute &&
+                            directions.legs.map((leg, lIndex) => (
+                                <React.Fragment key={lIndex}>
+                                    {leg.steps.map((step, sIndex) => (
+                                        <React.Fragment key={sIndex}>
+                                            {step.path && (
+                                                <Polyline
+                                                    key={`${lIndex}_${sIndex}`}
+                                                    coordinates={step.path.map(point => ({
+                                                        latitude: point.lat,
+                                                        longitude: point.lng
+                                                    }))}
+                                                    strokeColor="#FF0000"
+                                                    strokeWidth={5}
+                                                />
+                                            )}
+                                        </React.Fragment>
+                                    ))}
+                                </React.Fragment>
+                            ))}
+                        {stations && stations.map((station, index) => (
+                            <Marker
+                                key={index}
+                                coordinate={{
+                                    latitude: station.latitude,
+                                    longitude: station.longitude,
+                                }}
+                                title={station.name}
+                                description={station.description}
+                            >
+                                {/* Custom bus icon for the marker */}
+                                <Image
+                                    source={require('../../assets/finish.png')}
+                                    style={{ width: 40, height: 40 }} // Adjust the size as needed
+                                />
+                            </Marker>
+                        ))}
+                    </MapView>
+                ) : (
+                    <Text>Loading...</Text>
+                )}
+
+
+
+                {/* Content over the map */}
+                <View style={styles.content}>
+                    <View style={styles.bottomsheet}>
+                        <Text>Hello Mr. {responseData.name}</Text>
+                        <Pressable style={styles.button}>
+                            <Text style={styles.buttontext} onPress={() => { setButtonatt("Ride Started") }}>{buttonatt}</Text>
+                        </Pressable>
+                        <Pressable style={styles.ride}>
+                            <Image style={styles.picture} source={require('../../assets/finish.png')} />
+                            <Text style={styles.destinationBold}>Next Stop: {counter < stationList.length ? nextStation.name : "Route Completed"}</Text>
+                            <Text style={styles.destinationBold}>Time Left:{distanceTime ? distanceTime.duration : "calculating"} </Text>
+                            <Text style={styles.destinationBold}>Distance Left:{distanceTime ? distanceTime.distance : "calculating"}</Text>
+
+                        </Pressable>
+                    </View>
                 </View>
+
+
             </View>
-        </View>
+        ) : (
+
+
+            <NoShift name={responseData.name} />
+        )
+
+
+
+
     );
 
 }
@@ -284,8 +451,10 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 0.25,
+
         justifyContent: 'center',
         alignItems: 'center',
+
     },
     bottomsheet: {
         backgroundColor: 'white',
@@ -308,7 +477,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     ride: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         alignItems: 'center',
     },
     picture: {
