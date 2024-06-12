@@ -125,59 +125,6 @@ const CaptainStartRide = ({ navigation }) => {
 
 
 
-    // useEffect(() => {
-    //     (async () => {
-    //         let { status } = await Location.requestForegroundPermissionsAsync();
-    //         if (status !== 'granted') {
-    //             setErrorMsg('Permission to access location was denied');
-    //             return;
-    //         }
-
-    //         let locationSubscription = await Location.watchPositionAsync(
-    //             {
-    //                 accuracy: Location.Accuracy.High,
-    //                 // timeInterval: 1000, // Update location every 2 seconds (adjust as needed)
-    //             },
-    //             async (newLocation) => {
-
-
-    //                 if (nextStation) {
-    //                     const distTime = await calculateDistanceAndTime(newLocation.coords, { "latitude": nextStation.latitude, "longitude": nextStation.longitude })
-    //                     let arr = distTime.distance.split(" ")
-
-    //                     if (arr[1] === "m" && arr[0] <= 50) {
-
-    //                         console.log("counter value is:", counter)
-    //                         if ((counter + 1) < stationList.length) {
-    //                             setNextStation(stationList[counter + 1])
-
-    //                         }
-    //                         setCounter(prevCounter => prevCounter + 1);
-    //                     }
-
-    //                     setDistanceTime(distTime)
-    //                     //console.log("distance time", distTime)
-    //                 }
-
-
-    //                 setLocation(newLocation.coords);
-    //                 animateToUserLocation(newLocation.coords);
-    //                 if (displayRoute) {
-    //                     console.log("I am called")
-    //                     await updateBus(newLocation.coords)
-    //                 }
-
-
-    //             }
-    //         );
-
-    //         return () => {
-    //             if (locationSubscription) {
-    //                 locationSubscription.remove();
-    //             }
-    //         };
-    //     })();
-    // }, []);
 
     const requestPermissions = async () => {
         try {
@@ -201,7 +148,7 @@ const CaptainStartRide = ({ navigation }) => {
             subscription1 = await Location.watchPositionAsync(
                 {
                     accuracy: Location.Accuracy.High,
-                    timeInterval: 500, // Update location every 1 second
+                    timeInterval: 1000, // Update location every 1 second
                 },
                 async (newLocation) => {
                     let distTime;
@@ -219,7 +166,10 @@ const CaptainStartRide = ({ navigation }) => {
 
                             if ((counter) < stationList.length) {
                                 console.log("counter value:", counter, nextStation.name)
-                                setNextStation(() => stationList[counter + 1])
+
+                                if ((counter) < stationList.length) {
+                                    setNextStation(() => stationList[counter + 1])
+                                }
                                 setCounter(prevCounter => prevCounter + 1);
                                 console.log(nextStation.name)
 

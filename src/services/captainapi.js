@@ -49,6 +49,23 @@ export const getAllStations = async () => {
 };
 
 
+
+
+export const getStationByID = async (stationID) => {
+
+  const apiUrl = `${URL}/station/${stationID}`; // Replace with your actual API URL
+  try {
+    const response = await axios.get(apiUrl);
+    return response.data;
+  } catch (error) {
+    // Handle errors for individual requests
+    console.error(`Error fetching data for station ID ${stationID}:`, error);
+  }
+}
+
+
+
+
 export const getStationsByID = async (stationList) => {
   const apiUrl = `${URL}/station/`; // Replace with your actual API URL
   const results = [];
@@ -88,3 +105,36 @@ export const updateBusLocation = async (id, coords, timeOfArrival, nextStation) 
     return 'Not Found';
   }
 };
+
+
+
+
+
+
+export const getAllBuses = async () => {
+  try {
+    const response = await axios.get(`${URL}/bus/view`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching buses:', error);
+    throw error;
+  }
+};
+
+
+
+
+export const getAllRoutes = async () => {
+
+  try {
+    const response = await axios.get(`${URL}/route/view`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching routes:', error);
+    throw error;
+  }
+
+
+
+
+}

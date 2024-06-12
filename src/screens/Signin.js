@@ -13,7 +13,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRoute } from '@react-navigation/native';
 import { loginUser } from "../services/api";
 
-export default Signup = ({navigation}) => {
+export default Signup = ({ navigation }) => {
   const route = useRoute();
   const { phoneNumber } = route.params;
   const [showPassword, setShowPassword] = useState(false);
@@ -22,7 +22,7 @@ export default Signup = ({navigation}) => {
 
   const onValueChange = (text) => {
     setPassword(text);
-   
+
   };
 
   const toggleShowPassword = () => {
@@ -30,26 +30,27 @@ export default Signup = ({navigation}) => {
   };
 
   const loginUserDetails = async () => {
-    try{
-      const response=await loginUser(phoneNumber,password);
-      if(response==="User Found"){
+    try {
+      const response = await loginUser(phoneNumber, password);
+
+      if (response.message === "User Found") {
         navigation.reset({
           index: 0,
-          routes: [{ name: 'RoutePlanner' }],
-          })
-     
-  
+          routes: [{ name: 'RoutePlanner', params: { responseData: response } }],
+        })
+
+
       }
-      else{
+      else {
         setError("Phone or Password is incorrect.")
       }
-      
+
     }
-    catch{
+    catch {
       console.log('Something is wrong.')
-     
+
     }
-    
+
 
   };
 
@@ -59,7 +60,7 @@ export default Signup = ({navigation}) => {
         <View style={styles.container}>
           <Text style={styles.textStyle}>SignIn</Text>
 
-    
+
 
           <Text style={styles.label}>Password</Text>
           <View style={styles.inputStyle}>
@@ -68,7 +69,7 @@ export default Signup = ({navigation}) => {
               secureTextEntry={!showPassword}
               placeholder="Enter Password"
               style={{ flex: 1 }}
-              onChangeText={(text)=>onValueChange(text)}
+              onChangeText={(text) => onValueChange(text)}
             />
             <MaterialCommunityIcons
               name={showPassword ? "eye-off" : "eye"}
@@ -80,8 +81,8 @@ export default Signup = ({navigation}) => {
           <TouchableOpacity style={styles.button} onPress={loginUserDetails}>
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
-          <View style={[{justifyContent:'center'},{alignItems:'center'},{marginTop:"5%"}]}>{error && <Text style={{ color: 'red' }}>{error}</Text>}</View>
-          
+          <View style={[{ justifyContent: 'center' }, { alignItems: 'center' }, { marginTop: "5%" }]}>{error && <Text style={{ color: 'red' }}>{error}</Text>}</View>
+
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>

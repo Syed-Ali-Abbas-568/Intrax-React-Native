@@ -22,27 +22,30 @@ function findNearestStations(userCoords, stationList) {
     // Calculate distances
     const distances = stationList.map(station => ({
         station,
-        distance: calculateDistance(userCoords, station.coordinates),
+        distance: calculateDistance(userCoords, { latitude: station.latitude, longitude: station.longitude }),
     }));
 
     // Sort stations by distance
     distances.sort((a, b) => a.distance - b.distance);
 
     // Take the nearest stations
-    const nearestStations = distances.slice(0, 5); // Take top 5 nearest stations
-
-    return nearestStations;
+    // Take top 5 nearest stations
+    console.log("here", distances)
+    return distances[0];
 }
 
-// Example usage
-const userCoordinates = { latitude: 37.7749, longitude: -122.4194 }; // Example user coordinates
-const stationList = [
-    { name: 'Station 1', coordinates: { latitude: 37.7749, longitude: -122.4194 } },
-    { name: 'Station 2', coordinates: { latitude: 37.7751, longitude: -122.4189 } },
-    { name: 'Station 3', coordinates: { latitude: 37.7755, longitude: -122.4182 } },
-    // Add more stations as needed
-];
+// // Example usage
+// const userCoordinates = { latitude: 37.7749, longitude: -122.4194 }; // Example user coordinates
+// const stationList = [
+//     { name: 'Station 1', latitude: 37.7749, longitude: -123.4194 },
+//     { name: 'Station 2', latitude: 37.7751, longitude: -122.4189 },
+//     { name: 'Station 3', latitude: 37.7755, longitude: -122.4182 },
+//     // Add more stations as needed
+// ];
 
-const nearestStations = findNearestStations(userCoordinates, stationList);
+// const nearestStations = findNearestStations(userCoordinates, stationList);
+// console.log(nearestStations)
 
-// Now you can use Google Maps API to calculate distance and time from the nearest stations
+
+
+export default findNearestStations;
