@@ -9,9 +9,8 @@ import { getAllBuses } from '../services/captainapi';
 const { width, height } = Dimensions.get('window');
 
 const LocationComponent = ({
-  //setStationID,
   liveMode,
-
+  dataSet,
   setDataSet,
   onLocationChange,
   closestStation,
@@ -20,7 +19,12 @@ const LocationComponent = ({
   destination,
   stationList,
   displayFullRoute,    // New prop for controlling route display
-  fullRouteData        // New prop containing route coordinates
+  fullRouteData,
+  setFullDataRoute,        // New prop containing route coordinates
+
+
+  hops,
+  setStationID,
 }) => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -28,6 +32,9 @@ const LocationComponent = ({
 
   const mapViewRef = useRef(null);
   const apiKey = "AIzaSyDRRMtathJaJoAfGPMtQ8dztAZxl2Dl_Vs";
+
+
+  const [currentStationIndex, setCurrentStationIndex] = useState(1)
 
 
 
@@ -47,48 +54,90 @@ const LocationComponent = ({
 
 
 
-  // useEffect(() => {
-  //   (async () => {
+  useEffect(() => {
+    (async () => {
 
 
-  //     if (liveMode) {
-  //       // Start tracking the user's location in live mode
-  //       Location.watchPositionAsync(
-  //         {
-  //           accuracy: Location.Accuracy.High,
-  //           timeInterval: 1000, // Update every second
-  //           distanceInterval: 5  // Update every 5 meters
-  //         },
-  //         newLocation => {
-  //           setLocation(newLocation);
-  //           updateRouteAndStation(newLocation.coords);
-  //         }
-  //       );
-  //     }
-  //   })();
-  // }, [liveMode]);
+      if (liveMode) {
+        // Start tracking the user's location in live mode
+        Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.High,
+            timeInterval: 1000, // Update every second
+            distanceInterval: 5  // Update every 5 meters
+          },
+          newLocation => {
+            setLocation(newLocation);
+            updateRouteAndStation(newLocation.coords);
+          }
+        );
+      }
+    })();
+  }, [liveMode]);
 
 
 
 
-  // const updateRouteAndStation = (userLocation) => {
-  //   if (!fullRouteData || fullRouteData.length < 2) return;
 
-  //   const waypoints = fullRouteData.slice(currentStationIndex + 1);
-  //   const nextStation = fullRouteData[currentStationIndex + 1];
+  const setCurrentStation = (userLocation) => {
+    if (!fullRouteData || fullRouteData.length < 2) return;
 
-  //   if (waypoints.length > 0) {
-  //     const [currentLat, currentLng] = [userLocation.latitude, userLocation.longitude];
-  //     const [nextLat, nextLng] = [nextStation.latitude, nextStation.longitude];
-  //     const distanceToNextStation = getDistance(currentLat, currentLng, nextLat, nextLng);
 
-  //     // If the user is within 50 meters of the next station, update to the next one
-  //     if (distanceToNextStation < 0.05) {
-  //       setCurrentStationIndex(currentStationIndex + 1);
-  //       setStationID(nextStation.stationID); // Update the next upcoming station ID
-  //     }
-  //   }
-  // };
+    const waypoints = fullRouteData.slice(currentStationIndex + 1, -2);
+    const nextStation = fullRouteData[currentStationIndex + 1];
+
+    if (waypoints.length > 0) {
+
+      const distanceToNextStation = calculateDistance(userLocation, nextStation);
+
+      // If the user is within 50 meters of the next station, update to the next one
+      if (distanceToNextStation < 0.05) {
+        setCurrentStationIndex(currentStationIndex + 1);
+
+      }
+
+      const stationExists = hops.find(switchStation => switchStation.stationID === nextStation._id);
+
+      if (stationExists) {
+        alert("Please Change Bus on the upcoming station")
+        setStationID(nextStation._id)
+      } else {
+        console.log(`Station ID ${stationIDToCheck} does not exist.`);
+      }
+
+
+
+
+    }
+  };
+
+
+
+
+
+
+  //// now what i want to do is to check if i am more than 0.5 
+  function calculateDistance(userCoords, stationCoords) {
+    const lat1 = userCoords.latitude;
+    const lon1 = userCoords.longitude;
+    const lat2 = stationCoords.latitude;
+    const lon2 = stationCoords.longitude;
+
+    const R = 6371; // Radius of the Earth in km
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in km
+    return distance;
+  }
+
+
+
+
 
 
 
@@ -131,6 +180,7 @@ const LocationComponent = ({
           ref={mapViewRef}
         >
           {!displayFullRoute && closestStation && (
+
             <MapViewDirections
               origin={{ latitude: location.coords.latitude, longitude: location.coords.longitude }}
               destination={{ latitude: closestStation.station.latitude, longitude: closestStation.station.longitude }}
@@ -150,15 +200,20 @@ const LocationComponent = ({
           {displayFullRoute && fullRouteData && fullRouteData.length > 1 && (
             <>
               {/* Route from source to first waypoint */}
-              <MapViewDirections
-                origin={fullRouteData[0]}
+              {dataSet.source.show && <MapViewDirections
+                origin={liveMode ? location.coords : fullRouteData[0]}
                 destination={fullRouteData[1]} // Set the destination as the first waypoint
                 apikey={apiKey}
                 strokeWidth={3}
-                strokeColor="#00ffff" // Green color for this segment
+                strokeColor="#00FFFF" // Green color for this segment
                 onReady={result => {
 
-                  setDataSet(prev => ({ ...prev, source: { distance: result.distance, time: result.duration } }))
+                  setDataSet(prev => ({ ...prev, source: { distance: result.distance, time: result.duration, show: true } }))
+
+
+                  if (result.distance < 0.05) {
+                    setDataSet(prev => ({ ...prev, source: { distance: result.distance, time: result.duration, show: false } }))
+                  }
                   //console.log(`Route from source to first waypoint - Distance: ${result.distance} km`);
                   //console.log(`Route from source to first waypoint - Duration: ${result.duration} min`);
 
@@ -168,9 +223,9 @@ const LocationComponent = ({
                   });
                 }}
                 onError={errorMessage => console.log('Error calculating route from source to first waypoint:', errorMessage)}
-              />
+              />}
               {/* Waypoints */}
-              <MapViewDirections
+              {dataSet.middle.show && <MapViewDirections
                 origin={fullRouteData[1]} // Second index as the source
                 destination={fullRouteData[fullRouteData.length - 2]} // Second last index as the destination
                 waypoints={fullRouteData.slice(2, -2)} // All the points in between as waypoints
@@ -180,20 +235,20 @@ const LocationComponent = ({
                 onReady={result => {
                   setDataSet(prev => ({
                     ...prev,
-                    middle: { distance: result.distance, time: result.duration }
+                    middle: { distance: result.distance, time: result.duration, show: true }
                   }));
-
-                  //  console.log(`Route distance: ${result.distance} km`);
-                  // console.log(`Route duration: ${result.duration} min`);
+                  if (result.distance < 0.05) {
+                    setDataSet(prev => ({ ...prev, middle: { distance: result.distance, time: result.duration, show: false } }))
+                  }
 
                   mapViewRef.current.fitToCoordinates(result.coordinates, {
                     edgePadding: { right: width / 20, bottom: height / 20, left: width / 20, top: height / 20 },
                   });
                 }}
                 onError={errorMessage => console.log('Error calculating route:', errorMessage)}
-              />
+              />}
               {/* Route from last waypoint to destination */}
-              <MapViewDirections
+              {dataSet.destination.show && <MapViewDirections
                 origin={fullRouteData[fullRouteData.length - 2]} // Set origin as the last but one waypoint
                 destination={fullRouteData[fullRouteData.length - 1]} // Set the destination as the actual destination
                 apikey={apiKey}
@@ -205,15 +260,20 @@ const LocationComponent = ({
                   // Fit map to this segment
                   setDataSet(prev => ({
                     ...prev,
-                    destination: { distance: result.distance, time: result.duration }
+                    destination: { distance: result.distance, time: result.duration, show: true }
                   }));
+
+                  if (result.distance < 0.05) {
+                    setDataSet(prev => ({ ...prev, destination: { distance: result.distance, time: result.duration, show: false } }))
+                  }
+
 
                   mapViewRef.current.fitToCoordinates(result.coordinates, {
                     edgePadding: { right: width / 20, bottom: height / 20, left: width / 20, top: height / 20 },
                   });
                 }}
                 onError={errorMessage => console.log('Error calculating route from last waypoint to destination:', errorMessage)}
-              />
+              />}
             </>
           )}
 
@@ -229,7 +289,7 @@ const LocationComponent = ({
             </Marker>
           ))}
 
-          {source && (
+          {source && !liveMode && (
             <Marker coordinate={{ latitude: source.latitude, longitude: source.longitude }} title={source.title} description={source.description}>
               <Image source={require('../../assets/src_dest.gif')} style={{ width: 40, height: 40 }} />
             </Marker>

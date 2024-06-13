@@ -43,7 +43,9 @@ const FullSteps = ({ styles, fullPath }) => {
                         <Text style={styles.cityStyle}>{step.route == updatedFullPath[index + 1].route ? "Stay on Current Bus" : "Kindly Change Buses "}</Text>}
 
 
-                    {!step.route && (index + 1 == updatedFullPath.length) &&
+                    {step.route && (index + 1 == updatedFullPath.length) &&
+                        <Text style={styles.cityStyle}>"Stay on Current Bus"</Text>}
+                    {!step.route &&
                         <Text style={styles.cityStyle}>"Stay on Current Bus"</Text>}
                 </View>
             </View>

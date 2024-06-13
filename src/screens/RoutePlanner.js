@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 
 import { useRoute } from '@react-navigation/native';
-import { getAllStations, getAllRoutes } from "../services/captainapi";
+import { getAllStations, getAllRoutes, getStationsByID } from "../services/captainapi";
 
 
 import findNearestStations from "../helpers/stationCalculation";
@@ -26,15 +26,15 @@ const App = ({ navigation }) => {
   const [stationArrivalInfo, setStationArrivalInfo] = useState(null);
   const [sheetOpen, setSheetOpen] = useState(true);
 
-  const [staitonID, setStationID] = useState("")
+  const [stationID, setStationID] = useState(null)
 
   const [data, setDataSet] = useState({
 
-    source: { distance: 0, time: 0 },
+    source: { distance: 0, time: 0, show: true },
     middle: {
-      distance: 0, time: 0
+      distance: 0, time: 0, show: true
     },
-    destination: { distance: 0, time: 0 }
+    destination: { distance: 0, time: 0, show: true }
 
 
   })
@@ -58,6 +58,14 @@ const App = ({ navigation }) => {
 
 
 
+  //states to handle what fucking current station are you at 
+
+  const [currentStation, setCurrentStation] = useState(null)
+
+  const [hops, setHops] = useState(null)
+
+
+
   const handleSheetChange = useCallback((index) => {
     setSheetOpen(index);
   }, []);
@@ -75,6 +83,8 @@ const App = ({ navigation }) => {
 
   const handleStationUpdate = (station) => {
     setClosestStation(station);
+    // console.log(station)
+    setStationID(station.station._id)
   };
 
   const handleStationInfo = (stationInfo) => {
@@ -82,7 +92,44 @@ const App = ({ navigation }) => {
   };
 
 
-  const handleContinue = () => {
+
+
+
+
+  const findBusSwitchStations = (updatedFullPath) => {
+    const switchStations = [];
+
+    for (let i = 0; i < updatedFullPath.length - 1; i++) {
+      const currentStep = updatedFullPath[i];
+      const nextStep = updatedFullPath[i + 1];
+
+      // Check if the route changes between the current step and the next step
+      if (currentStep.route !== nextStep.route) {
+        switchStations.push({
+          stationID: currentStep.station._id,
+          stationName: currentStep.station.name,
+          stepIndex: i + 1 // For display purposes
+        });
+      }
+    }
+
+    // Also check the last step if it's the end of the path and requires staying on the same bus
+    const lastStep = updatedFullPath[updatedFullPath.length - 1];
+    if (lastStep.route) {
+      switchStations.push({
+        stationID: lastStep.station._id,
+        stationName: lastStep.station.name,
+        stepIndex: updatedFullPath.length // For display purposes
+      });
+    }
+
+    return switchStations;
+  };
+
+
+
+
+  const handleContinue = async () => {
 
     //We have to find nearest Station to both location and destination
     //console.log("WHy is this workign?")
@@ -97,16 +144,21 @@ const App = ({ navigation }) => {
 
     const path = findPath(routes, nearestSource.station._id, nearestDestination.station._id)//stations id?
 
+
+
     if (path) {
+
+
+
       setFullRoute(true)
-      console.log("Path Found")
+      //console.log("Path Found")
 
       setRoutePath(path)
-      //console.log(path)
+      //console.log("PATH:", path)
       //console.log(nearestSource, nearestDestination)
-      path.forEach((step, index) => {
-        console.log(`Step ${index + 1}: Station ${step.station} ${step.route ? `(Switch to route ${step.route})` : ''}`);
-      });
+      // path.forEach((step, index) => {
+      //   console.log(`Step ${index + 1}: Station ${step.station} ${step.route ? `(Switch to route ${step.route})` : ''}`);
+      // });
 
 
 
@@ -131,20 +183,57 @@ const App = ({ navigation }) => {
       // Extract station IDs from the path array
       const pathStationIDs = path.map(item => item.station);
 
+      setStationID(pathStationIDs[0]) //Set First Station ID 
 
-      const fullRouteData = stationList
-        .filter(station => pathStationIDs.includes(station._id)) // Filter stations present in path
-        .map(station => ({ latitude: station.latitude, longitude: station.longitude })); // Extract latitude and longitude
 
-      //first
+      try {
 
-      fullRouteData.unshift({ latitude: sourceLocation.latitude, longitude: sourceLocation.longitude })
+        const stationFullData = await getStationsByID(pathStationIDs)
 
-      //end
-      fullRouteData.push({ latitude: destinationLocation.latitude, longitude: destinationLocation.longitude })
 
-      console.log(fullRouteData)
-      setCoordinatePath(fullRouteData)
+
+        const fullRouteData = stationFullData.map((item, index) => ({
+          latitude: item.latitude,  // Corrected to use the 'item' directly
+          longitude: item.longitude,
+          _id: item._id
+        }));
+
+
+
+
+        const change = findBusSwitchStations(path)
+
+        setHops(change);
+        console.log(change)
+
+
+
+
+        //  console.log(console.log("look here", fullRouteData))
+
+
+
+
+        //first
+
+        fullRouteData.unshift({ latitude: sourceLocation.latitude, longitude: sourceLocation.longitude, _id: 0 })
+
+        //end
+        fullRouteData.push({ latitude: destinationLocation.latitude, longitude: destinationLocation.longitude, _id: 0 })
+
+        console.log("THIS IS FULL ROUTE", fullRouteData)
+
+
+
+        setCoordinatePath(fullRouteData)
+
+      } catch (error) {
+        alert("No Path Found")
+        console.log("No Path Found")
+      }
+
+
+
 
 
     }
@@ -219,6 +308,12 @@ const App = ({ navigation }) => {
   return (
     <View style={[{ flex: 1 }, { flexDirection: 'column' }]}>
       <LocationComponent
+        hops={hops}
+        setStationID={setStationID}
+
+
+
+        dataSet={data}
         style={styles.mapStyle}
         closestStation={closestStation}
         onStationInfoUpdate={handleStationInfo}
@@ -227,6 +322,7 @@ const App = ({ navigation }) => {
         stationList={stationList}
         displayFullRoute={fullRoute}
         fullRouteData={coordinatePath}
+        setFullDataRoute={setCoordinatePath}
         setDataSet={setDataSet}
       />
 
@@ -250,9 +346,10 @@ const App = ({ navigation }) => {
         />
       )}
       <View style={styles.container}>
-        {console.log("Station list before", stationList)}
+
         <BottomSheetContent
-          //stationID={stationID}
+          stationID={stationID}
+
           dataSet={data}
           responseData={responseData}
           sheetRef={sheetRef}

@@ -17,43 +17,48 @@ const BottomSheetContent = ({ sheetRef, snapPoints, handleSheetChange, stationAr
     fullRoute, routePath, dataSet, stationID }) => {
 
 
-    const [b1uses, set1Buses] = useState([]);
+
 
     const [buses, setBuses] = useState([]);
     const [message, setMessage] = useState('Fetching bus data...');
 
-    // useEffect(() => {
-    //     const fetchBuses = async () => {
-    //         try {
-    //             // Fetch all buses
-    //             const busData = await getAllBuses();
+    useEffect(() => {
+        const fetchBuses = async () => {
 
-    //             // Filter buses that are heading to the given stationID
-    //             const filteredBuses = busData.filter(bus => bus.nextStation === stationID);
+            if (stationID) {
 
-    //             // Update state with filtered buses or a message if none are found
-    //             if (filteredBuses.length > 0) {
-    //                 setBuses(filteredBuses);
-    //                 setMessage(''); // Clear the message if buses are found
-    //             } else {
-    //                 setBuses([]);
-    //                 setMessage('No bus available right now');
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching bus data:', error);
-    //             setMessage('Failed to fetch bus data');
-    //         }
-    //     };
+                //alert("Kindly change bues now!")
+                try {
+                    // Fetch all buses
+                    const busData = await getAllBuses();
 
-    //     // Initial fetch
-    //     fetchBuses();
+                    // Filter buses that are heading to the given stationID
+                    const filteredBuses = busData.filter(bus => bus.nextStation === stationID);
 
-    //     // Set interval to fetch data every 3 seconds
-    //     const intervalId = setInterval(fetchBuses, 3000);
+                    // Update state with filtered buses or a message if none are found
+                    if (filteredBuses.length > 0) {
+                        setBuses(filteredBuses);
+                        setMessage(''); // Clear the message if buses are found
+                    } else {
+                        setBuses([]);
+                        setMessage('No bus available right now');
+                    }
+                } catch (error) {
+                    console.error('Error fetching bus data:', error);
+                    setMessage('Failed to fetch bus data');
+                }
+            }
+        };
 
-    //     // Clear interval on component unmount
-    //     return () => clearInterval(intervalId);
-    // }, [stationID]);
+        // Initial fetch
+        fetchBuses();
+
+        // Set interval to fetch data every 3 seconds
+        const intervalId = setInterval(fetchBuses, 5000);
+
+        // Clear interval on component unmount
+        return () => clearInterval(intervalId);
+    }, [stationID]);
 
 
 
@@ -76,8 +81,8 @@ const BottomSheetContent = ({ sheetRef, snapPoints, handleSheetChange, stationAr
                 <StationInfo stationArrivalInfo={stationArrivalInfo} styles={styles} />
 
 
-                {/*
-                <TouchableOpacity style={styles.arrival}>
+
+                {stationID && <View style={styles.arrival}>
                     {buses.length > 0 ? (
                         buses.map((bus, index) => (
                             <View key={bus._id || index}>
@@ -85,9 +90,9 @@ const BottomSheetContent = ({ sheetRef, snapPoints, handleSheetChange, stationAr
                             </View>
                         ))
                     ) : (
-                        <Text>{message}</Text>
+                        <Text style={styles.buttonText}>{message}</Text>
                     )}
-                </TouchableOpacity> */}
+                </View>}
 
 
 
@@ -98,7 +103,7 @@ const BottomSheetContent = ({ sheetRef, snapPoints, handleSheetChange, stationAr
 
                     {dataSet.middle.distance ?
                         (<>
-                            <Text style={[styles.buttonInfoText, { color: 'green', fontWeight: 'bold' }]}>Estimated Intermediate Bus Journey Time</Text>
+                            <Text style={[styles.buttonInfoText, { color: 'green', fontWeight: 'bold' }]}>Estimated Intermediate Bus Journey</Text>
                             <Text style={styles.buttonInfoText}>Time: <Text style={{ fontWeight: 'normal' }}>{Math.round(dataSet.middle.time)} min</Text> Distance: <Text style={{ fontWeight: 'normal' }}>{(dataSet.middle.distance).toFixed(1)} km </Text></Text>
                         </>) : ""}
 
@@ -115,7 +120,7 @@ const BottomSheetContent = ({ sheetRef, snapPoints, handleSheetChange, stationAr
                 }
 
                 }>
-                    <Text style={styles.buttonText}>Continue</Text>
+                    <Text style={styles.buttonText}>{!fullRoute ? "Continue" : "Finish Journey"}</Text>
                 </TouchableOpacity>
 
                 {fullRoute && <FullSteps fullPath={routePath} styles={styles} />}
